@@ -13,7 +13,7 @@ async function run() {
 
   const client = new Client({
     connectionString: dbUrl,
-    ssl: false
+    ssl: dbUrl.includes('localhost') ? false : { rejectUnauthorized: false }
   });
 
   try {
@@ -24,7 +24,11 @@ async function run() {
 
     // Also check if users table exists and what columns it has
     if (res.rows.some(r => r.table_name === 'admins')) {
-      const users = await client.query(`SELECT username, email, role FROM admins`);
+      const users = await client.query(`
+        SELECT a.username, a.email, r.name as role
+        FROM admins a
+        LEFT JOIN roles r ON a.role_id = r.id
+      `);
       console.log('Admins users:', users.rows);
     }
   } catch (e) {
