@@ -243,7 +243,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onToggle }) => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-[9999]">
+    <div className="fixed bottom-24 right-6 z-[99999]">
       <AnimatePresence>
         {isOpen && (
           <motion.div

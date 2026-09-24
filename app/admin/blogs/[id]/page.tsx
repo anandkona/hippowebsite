@@ -27,8 +27,8 @@ export default function EditBlogPage() {
 
   const coverInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
-  const params = useParams();
-  const { id } = params;
+  const params = useParams() as { id?: string };
+  const id = params?.id;
 
   useEffect(() => {
     if (!id) return;

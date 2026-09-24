@@ -8,7 +8,7 @@ import PermissionGate from "@/components/admin/PermissionGate";
 
 export default function ProductEditorCMS() {
   const router = useRouter();
-  const params = useParams();
+  const params = useParams() as { productId?: string };
   const productId = params?.productId as string;
 
   const [loading, setLoading] = useState(true);

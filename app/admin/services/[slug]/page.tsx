@@ -8,7 +8,7 @@ import PermissionGate from "@/components/admin/PermissionGate";
 
 export default function ServiceEditorCMS() {
   const router = useRouter();
-  const params = useParams();
+  const params = useParams() as { slug?: string };
   const slug = params?.slug as string;
 
   const [loading, setLoading] = useState(true);
