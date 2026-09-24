@@ -68,7 +68,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: "Blogs", href: "/admin/blogs", icon: BookOpen, permission: "manage_blogs" },
     { name: "Products", href: "/admin/products", icon: Package, permission: "manage_products" },
     { name: "Services", href: "/admin/services", icon: BookOpen, permission: "manage_services" },
-    { name: "Live Chat", href: "/admin/chat", icon: MessageSquare, permission: "manage_chat" },
+    { name: "Live Chat", href: "/admin/chat", icon: MessageSquare, permission: "none" },
     { name: "Team", href: "/admin/users", icon: Users, permission: "manage_team" },
     { name: "Roles", href: "/admin/roles", icon: Shield, permission: "manage_team" },
   ];
@@ -92,8 +92,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               Admin Panel
             </p>
           </div>
-          {navItems.filter(item => item.permission === "none" || userPermissions.includes(item.permission)).map((item) => {
-            const isActive = pathname === item.href || (item.href === "/admin/home" && ["/admin/banners", "/admin/seo", "/admin/home"].includes(pathname));
+          {navItems.filter(item => item.permission === "none" || (Array.isArray(userPermissions) && userPermissions.includes(item.permission))).map((item) => {
+            const isActive = pathname === item.href || (item.href === "/admin/home" && ["/admin/banners", "/admin/seo", "/admin/home"].includes(pathname || ""));
             return (
               <Link
                 key={item.name}

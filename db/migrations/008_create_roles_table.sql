@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS roles (
 );
 
 INSERT INTO roles (name, permissions) 
-SELECT 'Super Admin', '["manage_blogs", "manage_skills", "manage_partners", "manage_products", "manage_services", "manage_seo", "manage_banners", "manage_team"]'::jsonb
+SELECT 'Super Admin', '["manage_blogs", "manage_skills", "manage_partners", "manage_products", "manage_services", "manage_seo", "manage_banners", "manage_team", "manage_chat"]'::jsonb
 WHERE NOT EXISTS (SELECT 1 FROM roles WHERE name = 'Super Admin');
 
 ALTER TABLE admins ADD COLUMN IF NOT EXISTS role_id INTEGER REFERENCES roles(id);

@@ -92,8 +92,9 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onToggle }) => {
   useEffect(() => {
     if (!isOpen) return;
 
-    const wsUrl = process.env.NEXT_PUBLIC_WS_URL || `http://${window.location.hostname}:3001`;
-    const newSocket = io(wsUrl, {
+    const newSocket = io('', {
+      path: '/api/socket',
+      addTrailingSlash: false,
       transports: ['polling', 'websocket'],
       reconnection: true,
       reconnectionAttempts: 10,
@@ -252,7 +253,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onToggle }) => {
             className="mb-4 w-[calc(100vw-32px)] sm:w-[350px] h-[550px] max-h-[calc(100vh-120px)] bg-background border border-border rounded-2xl shadow-2xl overflow-hidden flex flex-col"
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-4">
+            <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-4">
               <div className="flex items-center justify-between mb-1">
                 <span className="font-bold flex items-center gap-2 text-sm sm:text-base">
                   <MessageCircle size={20} /> {sessionId ? 'Chat with Support' : 'Live Support'}
@@ -296,7 +297,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onToggle }) => {
                         placeholder="Your Name *"
                         value={userName}
                         onChange={(e) => setUserName(e.target.value)}
-                        className="w-full bg-background border border-border rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+                        className="w-full bg-background border border-border rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
                       />
                     </div>
                     <div className="relative">
@@ -310,7 +311,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onToggle }) => {
                           setUserPhone(val);
                           validatePhone(val);
                         }}
-                        className={`w-full bg-background border ${phoneError ? 'border-destructive' : 'border-border'} rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none`}
+                        className={`w-full bg-background border ${phoneError ? 'border-destructive' : 'border-border'} rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none`}
                       />
                       {phoneError && (
                         <p className="text-[10px] text-destructive mt-1 ml-1 text-left font-medium">{phoneError}</p>
@@ -323,14 +324,14 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onToggle }) => {
                         placeholder="Email (optional)"
                         value={userEmail}
                         onChange={(e) => setUserEmail(e.target.value)}
-                        className="w-full bg-background border border-border rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+                        className="w-full bg-background border border-border rounded-xl pl-10 pr-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
                       />
                     </div>
                     <button
                       type="button"
                       onClick={handleStartChat}
                       disabled={isLoading || !userName.trim() || !userPhone.trim() || !!phoneError || userPhone.length !== 10}
-                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                     >
                       {isLoading && <Loader2 size={16} className="animate-spin" />}
                       {isLoading ? 'Connecting...' : 'Start Chat'}
@@ -353,7 +354,7 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onToggle }) => {
                       <div
                         className={`max-w-[85%] px-3.5 py-2.5 rounded-2xl text-sm shadow-sm ${
                           msg.sender === 'USER'
-                            ? 'bg-emerald-100 text-emerald-950 rounded-tr-none'
+                            ? 'bg-blue-100 text-blue-950 rounded-tr-none'
                             : 'bg-white border border-border/50 text-foreground rounded-tl-none'
                         }`}
                       >
@@ -386,9 +387,9 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onToggle }) => {
                         <div className="flex items-center gap-1.5">
                           <span className="text-[9px] uppercase font-bold opacity-50 text-muted-foreground">Support</span>
                           <div className="flex gap-1 ml-1">
-                            <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce [animation-delay:-0.3s]" />
-                            <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce [animation-delay:-0.15s]" />
-                            <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce" />
+                            <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                            <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                            <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" />
                           </div>
                         </div>
                       </div>
@@ -413,13 +414,13 @@ const LiveChat: React.FC<LiveChatProps> = ({ isOpen, onToggle }) => {
                     }}
                     onKeyPress={handleKeyPress}
                     placeholder="Type your message..."
-                    className="flex-1 bg-accent/50 border-none rounded-full px-4 py-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
+                    className="flex-1 bg-accent/50 border-none rounded-full px-4 py-2.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
                   />
                   <button
                     type="button"
                     onClick={handleSendMessage}
                     disabled={!newMessage.trim()}
-                    className="bg-emerald-600 text-white p-2.5 rounded-full hover:bg-emerald-700 transition-colors disabled:opacity-50"
+                    className="bg-blue-600 text-white p-2.5 rounded-full hover:bg-blue-700 transition-colors disabled:opacity-50"
                   >
                     <Send size={18} />
                   </button>

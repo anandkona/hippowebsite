@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { MessageSquare, Send, Loader2, User, Phone, Mail, Clock, Check, CheckCheck, Wifi, WifiOff, Volume2, VolumeX } from 'lucide-react';
+import { MessageSquare, Send, Loader2, User, Phone, Mail, Clock, Check, CheckCheck, Wifi, WifiOff, Volume2, VolumeX, Download, Search } from 'lucide-react';
 import { io, Socket } from 'socket.io-client';
 
 interface Session {
@@ -45,14 +45,18 @@ export default function ChatAdmin() {
   const [typingUsers, setTypingUsers] = useState<Set<string>>(new Set());
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [unreadCounts, setUnreadCounts] = useState<Record<string, number>>({});
+  const [searchQuery, setSearchQuery] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const typingTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     fetchSessions();
 
-    const wsUrl = process.env.NEXT_PUBLIC_WS_URL || `http://${window.location.hostname}:3001`;
-    const newSocket = io(wsUrl, {
+    const newSocket = io('', {
+      path: '/api/socket',
+      addTrailingSlash: false,
       transports: ['polling', 'websocket'],
       reconnection: true,
     });
@@ -230,6 +234,44 @@ export default function ChatAdmin() {
     return `${days}d ago`;
   };
 
+  const filteredSessions = sessions.filter(session => {
+    const matchesSearch = 
+      session.user_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      session.user_phone.includes(searchQuery) ||
+      (session.user_email && session.user_email.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    let matchesDate = true;
+    if (startDate) {
+      matchesDate = matchesDate && new Date(session.last_message_at) >= new Date(startDate);
+    }
+    if (endDate) {
+      const end = new Date(endDate);
+      end.setHours(23, 59, 59, 999);
+      matchesDate = matchesDate && new Date(session.last_message_at) <= end;
+    }
+
+    return matchesSearch && matchesDate;
+  });
+
+  const handleExport = () => {
+    const headers = ['Session ID', 'Name', 'Phone', 'Email', 'Status', 'Last Message At'];
+    const csvContent = [
+      headers.join(','),
+      ...filteredSessions.map(s => 
+        `"${s.id}","${s.user_name}","${s.user_phone}","${s.user_email || ''}","${s.status}","${s.last_message_at}"`
+      )
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `chat_sessions_export_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -239,16 +281,16 @@ export default function ChatAdmin() {
   }
 
   return (
-    <div className="h-[calc(100vh-12rem)] flex gap-4">
+    <div className="h-[calc(100vh-8rem)] -m-2 sm:-m-4 md:-m-6 flex bg-card border border-border/50 shadow-sm overflow-hidden rounded-xl">
       {/* Sessions List */}
-      <div className="w-full md:w-80 bg-card rounded-2xl border border-border/50 shadow-sm flex flex-col overflow-hidden">
+      <div className="w-full md:w-[320px] lg:w-[350px] flex flex-col border-r border-border/50 flex-shrink-0">
         <div className="p-4 border-b border-border/50 flex items-center justify-between">
           <div>
             <h2 className="font-bold text-lg flex items-center gap-2">
               <MessageSquare className="h-5 w-5 text-primary" />
               Live Chat
             </h2>
-            <p className="text-sm text-muted-foreground">{sessions.length} conversations</p>
+            <p className="text-sm text-muted-foreground">{filteredSessions.length} conversations</p>
           </div>
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
@@ -259,14 +301,50 @@ export default function ChatAdmin() {
           </button>
         </div>
 
+        <div className="px-3 pb-3 pt-2 border-b border-border/50 space-y-2 bg-muted/20">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search name, phone, email..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-9 pr-3 py-2 bg-background border border-border/50 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="w-1/2 px-2 py-1.5 bg-background border border-border/50 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+            <span className="text-muted-foreground text-xs">to</span>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="w-1/2 px-2 py-1.5 bg-background border border-border/50 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+          </div>
+          <button
+            onClick={handleExport}
+            disabled={filteredSessions.length === 0}
+            className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-primary/10 text-primary hover:bg-primary/20 rounded-xl text-sm font-medium transition-colors disabled:opacity-50"
+          >
+            <Download className="h-4 w-4" />
+            Export CSV
+          </button>
+        </div>
+
         <div className="flex-1 overflow-y-auto">
-          {sessions.length === 0 ? (
+          {filteredSessions.length === 0 ? (
             <div className="p-8 text-center text-muted-foreground">
               <MessageSquare className="h-12 w-12 mx-auto mb-3 opacity-50" />
-              <p>No conversations yet</p>
+              <p>No conversations found</p>
             </div>
           ) : (
-            sessions.map((session) => {
+            filteredSessions.map((session) => {
               const isOnline = onlineUsers.has(session.id);
               const isTyping = typingUsers.has(session.id);
               const unread = unreadCounts[session.id] || 0;
@@ -275,59 +353,46 @@ export default function ChatAdmin() {
                 <button
                   key={session.id}
                   onClick={() => handleSelectSession(session)}
-                  className={`w-full p-4 text-left hover:bg-muted/50 transition-colors border-b border-border/30 ${selectedSession?.id === session.id ? 'bg-primary/5 border-l-2 border-l-primary' : ''
-                    }`}
+                  className={`w-full px-3 py-1 flex items-stretch gap-3 text-left hover:bg-muted/50 transition-colors ${selectedSession?.id === session.id ? 'bg-muted/80' : ''}`}
                 >
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="relative">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                          <User className="h-5 w-5 text-primary" />
-                        </div>
-                        {/* Online indicator */}
-                        <div className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-card ${isOnline ? 'bg-emerald-500' : 'bg-gray-400'}`} />
-                      </div>
-                      <div>
-                        <p className="font-medium text-sm">{session.user_name}</p>
-                        <p className="text-xs text-muted-foreground flex items-center gap-1">
-                          <Phone className="h-3 w-3" />
-                          {session.user_phone}
-                        </p>
-                        {session.user_email && (
-                          <p className="text-xs text-muted-foreground flex items-center gap-1">
-                            <Mail className="h-3 w-3" />
-                            {session.user_email}
-                          </p>
-                        )}
-                      </div>
+                  <div className="relative flex-shrink-0 self-center">
+                    <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden">
+                      <User className="h-6 w-6 text-primary/70" />
                     </div>
-                    <div className="text-right flex flex-col items-end gap-1">
-                      <div className="flex items-center gap-2">
-                        {unread > 0 && (
-                          <span className="bg-primary text-primary-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                            {unread}
-                          </span>
-                        )}
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full ${session.status === 'WAITING' ? 'bg-yellow-100 text-yellow-700' :
-                          session.status === 'ACTIVE' ? 'bg-green-100 text-green-700' :
-                            'bg-gray-100 text-gray-700'
-                          }`}>
-                          {session.status}
-                        </span>
-                      </div>
-                      <p className="text-[10px] text-muted-foreground flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
+                    <div className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-card ${isOnline ? 'bg-emerald-500' : 'bg-gray-400'}`} />
+                  </div>
+                  
+                  <div className="flex-1 min-w-0 border-b border-border/30 py-3 flex flex-col justify-center">
+                    <div className="flex justify-between items-center mb-0.5">
+                      <p className="font-semibold text-[15px] truncate text-foreground leading-tight">
+                        {session.user_name}
+                      </p>
+                      <p className={`text-[11px] whitespace-nowrap ml-2 ${unread > 0 ? 'text-emerald-500 font-medium' : 'text-muted-foreground'}`}>
                         {formatDate(session.last_message_at)}
                       </p>
                     </div>
+                    
+                    <div className="flex justify-between items-center gap-2">
+                      {isTyping ? (
+                        <p className="text-[13px] text-emerald-500 italic truncate font-medium">typing...</p>
+                      ) : (
+                        <p className="text-[13px] text-muted-foreground truncate">
+                          {session.last_message || `Phone: ${session.user_phone}`}
+                        </p>
+                      )}
+                      
+                      <div className="flex items-center gap-1.5 flex-shrink-0">
+                        {session.status === 'WAITING' && (
+                          <span className="w-2 h-2 rounded-full bg-yellow-500" title="Waiting for reply" />
+                        )}
+                        {unread > 0 && (
+                          <span className="bg-emerald-500 text-white text-[11px] font-bold h-5 min-w-[20px] px-1.5 rounded-full flex items-center justify-center">
+                            {unread}
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  {isTyping ? (
-                    <p className="text-xs text-emerald-600 mt-2 pl-13 italic">typing...</p>
-                  ) : session.last_message ? (
-                    <p className="text-xs text-muted-foreground mt-2 truncate pl-13">
-                      {session.last_message}
-                    </p>
-                  ) : null}
                 </button>
               );
             })
@@ -336,7 +401,7 @@ export default function ChatAdmin() {
       </div>
 
       {/* Chat Window */}
-      <div className="flex-1 bg-card rounded-2xl border border-border/50 shadow-sm flex flex-col overflow-hidden hidden md:flex">
+      <div className="flex-1 flex flex-col hidden md:flex min-w-0 bg-background/50">
         {!selectedSession ? (
           <div className="flex-1 flex items-center justify-center text-muted-foreground">
             <div className="text-center">

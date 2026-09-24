@@ -4,6 +4,7 @@ CREATE TABLE IF NOT EXISTS chat_sessions (
   id VARCHAR(255) PRIMARY KEY,
   user_name VARCHAR(255) NOT NULL,
   user_phone VARCHAR(20) NOT NULL UNIQUE,
+  user_email VARCHAR(255),
   status VARCHAR(20) DEFAULT 'WAITING' CHECK (status IN ('WAITING', 'ACTIVE', 'CLOSED')),
   last_message_at TIMESTAMP DEFAULT NOW(),
   created_at TIMESTAMP DEFAULT NOW()

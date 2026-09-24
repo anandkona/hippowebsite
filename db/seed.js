@@ -12,9 +12,9 @@ async function seed() {
     await client.connect();
     console.log('Connected to database for seeding.');
 
-    const username = process.argv[2] || 'admin';
-    const password = process.argv[3] || 'password123';
-    const email = process.argv[4] || 'admin@hippoclouds.com';
+    const username = process.argv[2] || 'sateesh';
+    const password = process.argv[3] || 'Hippo@2026';
+    const email = process.argv[4] || 'sateesh@hippoclouds.com';
 
     // Check if user already exists
     const checkRes = await client.query('SELECT id FROM admins WHERE username = $1', [username]);
@@ -26,9 +26,16 @@ async function seed() {
     const salt = await bcrypt.genSalt(10);
     const passwordHash = await bcrypt.hash(password, salt);
 
+    // Fetch the Super Admin role id for protected routes
+    let roleId = null;
+    const roleRes = await client.query("SELECT id FROM roles WHERE name = 'Super Admin'");
+    if (roleRes.rows.length > 0) {
+      roleId = roleRes.rows[0].id;
+    }
+
     await client.query(
-      'INSERT INTO admins (username, email, password_hash) VALUES ($1, $2, $3)',
-      [username, email, passwordHash]
+      'INSERT INTO admins (username, email, password_hash, role_id) VALUES ($1, $2, $3, $4)',
+      [username, email, passwordHash, roleId]
     );
 
     console.log(`Successfully created admin user '${username}' with password '${password}'.`);
