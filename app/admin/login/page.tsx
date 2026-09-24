@@ -12,6 +12,7 @@ const AdminLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -36,13 +37,16 @@ const AdminLogin = () => {
         if (data.email) localStorage.setItem("user_email", data.email);
         localStorage.setItem("user_isAdmin", data.isAdmin.toString());
 
-        router.push("/admin/dashboard");
+        setSuccess("Login successful! Redirecting...");
+        setTimeout(() => {
+          router.push("/admin/dashboard");
+        }, 800);
       } else {
         setError(data.message || "Invalid credentials");
+        setIsLoading(false);
       }
     } catch (err) {
       setError("An error occurred during login");
-    } finally {
       setIsLoading(false);
     }
   };
@@ -82,6 +86,16 @@ const AdminLogin = () => {
                   >
                     <div className="h-1.5 w-1.5 rounded-full bg-red-500" />
                     {error}
+                  </motion.div>
+                )}
+                {success && (
+                  <motion.div 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    className="p-4 text-sm font-medium text-emerald-500 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center gap-2"
+                  >
+                    <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                    {success}
                   </motion.div>
                 )}
                 
