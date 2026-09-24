@@ -2,14 +2,73 @@ import { Server as ServerIO } from 'socket.io';
 import { Pool } from 'pg';
 
 // Setup database pool
+const ssl =
+  process.env.DATABASE_SSL === 'true'
+    ? { rejectUnauthorized: false }
+    : process.env.DATABASE_SSL === 'false' || process.env.NODE_ENV !== 'production'
+      ? false
+      : { rejectUnauthorized: false };
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_URL?.includes('localhost') ? false : { rejectUnauthorized: false },
+  ssl,
 });
 
 async function query(text: string, params?: any[]) {
   const result = await pool.query(text, params);
   return result;
+}
+
+function getBotResponse(text: string): string | null {
+  const normalizedText = text.toLowerCase().trim();
+
+  if (
+    normalizedText.includes('product') ||
+    normalizedText.includes('hippocx') ||
+    normalizedText.includes('hippoaqua') ||
+    normalizedText.includes('hippobuildx')
+  ) {
+    return `Hippocloud Enterprise Products
+
+HIPPOCX — AI-powered CRM and digital integration with predictive analytics, workflow automation and enterprise APIs.
+
+HIPPOAQUA — Intelligent water management with IoT monitoring, quality analytics, leak detection and compliance automation.
+
+HIPPO BUILDX — Smart construction management covering BIM, resources, progress, costs, collaboration and safety.`;
+  }
+
+  if (
+    normalizedText.includes('skill') ||
+    normalizedText.includes('academy') ||
+    normalizedText.includes('training') ||
+    normalizedText.includes('course')
+  ) {
+    return `Hippocloud Skill Academy
+
+Our enterprise academy provides industry-aligned training for:
+• Enterprise technology
+• Cloud and DevOps
+• AI, data and digital transformation
+
+Programs are designed to help organizations build practical skills for modern technology environments.`;
+  }
+
+  if (
+    normalizedText.includes('service') ||
+    normalizedText.includes('cloud') ||
+    normalizedText.includes('devops') ||
+    normalizedText.includes('managed it') ||
+    normalizedText.includes('cybersecurity')
+  ) {
+    return `Hippocloud Technology Services
+
+• Cloud Solutions — Resilient AWS, Azure and GCP infrastructure
+• Software Development — Bespoke applications built around business needs
+• DevOps and Automation — Modern CI/CD and operational automation
+• Enterprise IT Services — Managed IT support and cybersecurity`;
+  }
+
+  return null;
 }
 
 export const config = {
@@ -45,23 +104,33 @@ export default function SocketHandler(req: any, res: any) {
     console.log('Client connected:', socket.id);
 
     // USER connects
-    socket.on('user-connect', async (data) => {
-      const { phone, name, email } = data;
+    socket.on('user-connect', async (data: { phone?: unknown; name?: unknown; email?: unknown }) => {
+      const phone = typeof data?.phone === 'string' ? data.phone.trim() : '';
+      const name = typeof data?.name === 'string' ? data.name.trim() : '';
+      const email = typeof data?.email === 'string' ? data.email.trim() : '';
+
+      if (!phone || !name) {
+        socket.emit('error', { message: 'Name and phone are required' });
+        return;
+      }
 
       try {
-        let result = await query('SELECT * FROM chat_sessions WHERE user_phone = $1', [phone]);
+        const sessionId = `session-${phone}`;
+        await query(
+          `INSERT INTO chat_sessions (id, user_name, user_phone, user_email, status)
+           VALUES ($1, $2, $3, $4, $5)
+           ON CONFLICT DO NOTHING`,
+          [sessionId, name, phone, email || null, 'WAITING']
+        );
+        await query(
+          `UPDATE chat_sessions
+           SET user_name = $1,
+               user_email = COALESCE($2, user_email)
+           WHERE user_phone = $3`,
+          [name, email || null, phone]
+        );
 
-        if (result.rows.length === 0) {
-          const sessionId = `session-${phone}`;
-          await query(
-            'INSERT INTO chat_sessions (id, user_name, user_phone, user_email, status) VALUES ($1, $2, $3, $4, $5)',
-            [sessionId, name, phone, email || null, 'WAITING']
-          );
-          result = await query('SELECT * FROM chat_sessions WHERE id = $1', [sessionId]);
-        } else {
-          await query('UPDATE chat_sessions SET user_name = $1, user_email = COALESCE($2, user_email) WHERE user_phone = $3', [name, email || null, phone]);
-          result = await query('SELECT * FROM chat_sessions WHERE user_phone = $1', [phone]);
-        }
+        const result = await query('SELECT * FROM chat_sessions WHERE user_phone = $1', [phone]);
 
         const session = result.rows[0];
         socket.join(session.id);
@@ -78,6 +147,7 @@ export default function SocketHandler(req: any, res: any) {
           status: session.status,
           messages: messages.rows,
         });
+        socket.emit('admin-status', { online: onlineAdmins.size > 0 });
 
         // Notify admins user is online
         io.to('admin-room').emit('user-online', { sessionId: session.id });
@@ -100,6 +170,7 @@ export default function SocketHandler(req: any, res: any) {
       onlineAdmins.add(socket.id);
       socket.join('admin-room');
       console.log('Admin joined:', socket.id);
+      io.emit('admin-status', { online: true });
 
       // Send currently online users to admin
       const onlineSessionIds = Array.from(onlineUsers.keys());
@@ -125,6 +196,22 @@ export default function SocketHandler(req: any, res: any) {
           io.to('admin-room').emit('new-user-message', { sessionId, message });
           // Stop user typing indicator
           io.to('admin-room').emit('user-typing', { sessionId, isTyping: false });
+
+          const botReply = getBotResponse(text);
+          if (botReply) {
+            try {
+              const botResult = await query(
+                'INSERT INTO chat_messages (session_id, sender, text) VALUES ($1, $2, $3) RETURNING *',
+                [sessionId, 'ADMIN', botReply]
+              );
+              const botMessage = botResult.rows[0];
+
+              io.to(sessionId).emit('new-message', botMessage);
+              io.to('admin-room').emit('new-admin-message', { sessionId, message: botMessage });
+            } catch (error) {
+              console.error('Error sending website information:', error);
+            }
+          }
         }
       } catch (error) {
         console.error('Error sending message:', error);
@@ -155,7 +242,7 @@ export default function SocketHandler(req: any, res: any) {
         const userSocketId = onlineUsers.get(sessionId);
         if (userSocketId) {
           io.to(userSocketId).emit('admin-reply-notification', {
-            title: 'New reply from Support',
+            title: 'Hippocloud',
             body: text,
             sessionId,
           });
@@ -189,12 +276,17 @@ export default function SocketHandler(req: any, res: any) {
     socket.on('disconnect', () => {
       const sessionId = userSockets.get(socket.id);
       if (sessionId) {
-        onlineUsers.delete(sessionId);
+        if (onlineUsers.get(sessionId) === socket.id) {
+          onlineUsers.delete(sessionId);
+          io.to('admin-room').emit('user-offline', { sessionId });
+        }
         userSockets.delete(socket.id);
-        io.to('admin-room').emit('user-offline', { sessionId });
       }
 
-      onlineAdmins.delete(socket.id);
+      const wasOnlineAdmin = onlineAdmins.delete(socket.id);
+      if (wasOnlineAdmin && onlineAdmins.size === 0) {
+        io.emit('admin-status', { online: false });
+      }
       console.log('Client disconnected:', socket.id);
     });
   });

@@ -1,12 +1,19 @@
 const { Client } = require('pg');
 const fs = require('fs');
 const path = require('path');
-require('dotenv').config({ path: '.env.local' });
+require('dotenv').config({ path: path.join(__dirname, '..', '.env.local') });
 
 async function migrate() {
+  const ssl =
+    process.env.DATABASE_SSL === 'true'
+      ? { rejectUnauthorized: false }
+      : process.env.DATABASE_SSL === 'false' || process.env.NODE_ENV !== 'production'
+        ? false
+        : { rejectUnauthorized: false };
+
   const client = new Client({
     connectionString: process.env.DATABASE_URL,
-    ssl: process.env.DATABASE_URL?.includes('localhost') ? false : { rejectUnauthorized: false },
+    ssl,
   });
 
   try {
