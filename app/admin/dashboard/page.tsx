@@ -9,6 +9,7 @@ import {
   Briefcase,
   Package,
   GraduationCap,
+  Quote,
   Loader2
 } from "lucide-react";
 import Link from "next/link";
@@ -21,6 +22,7 @@ type Stats = {
   products: { total: number; active: number };
   services: { total: number; active: number };
   skills: { total: number; active: number };
+  reviews?: { total: number; active: number };
 };
 
 export default function AdminDashboard() {
@@ -28,13 +30,20 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
   const [permissions, setPermissions] = useState<string[]>([]);
+  const [isSuperOrAdmin, setIsSuperOrAdmin] = useState(false);
 
   useEffect(() => {
     const name = localStorage.getItem("user_name");
+    const role = localStorage.getItem("user_role");
+    const isAdmin = localStorage.getItem("user_isAdmin") === "true";
     if (name) setUserName(name.split(" ")[0]);
     try {
-      setPermissions(JSON.parse(localStorage.getItem("user_permissions") || "[]"));
-    } catch {}
+      const perms = JSON.parse(localStorage.getItem("user_permissions") || "[]");
+      setPermissions(perms);
+      setIsSuperOrAdmin(role === "Super Admin" || isAdmin || perms.includes("manage_team") || perms.includes("manage_all"));
+    } catch {
+      setIsSuperOrAdmin(role === "Super Admin" || isAdmin);
+    }
     fetchStats();
   }, []);
 
@@ -55,14 +64,15 @@ export default function AdminDashboard() {
   };
 
   const dashboardLinks = [
-    { title: "Products", count: stats?.products.total || 0, icon: Package, href: "/admin/products", permission: "manage_products" },
-    { title: "Services", count: stats?.services.total || 0, icon: Briefcase, href: "/admin/services", permission: "manage_services" },
-    { title: "Skills", count: stats?.skills.total || 0, icon: GraduationCap, href: "/admin/skills", permission: "manage_skills" },
-    { title: "Blog Posts", count: stats?.blogs.total || 0, icon: BookOpen, href: "/admin/blogs", permission: "manage_blogs" },
-    { title: "Partners", count: stats?.partners.total || 0, icon: Users, href: "/admin/partners", permission: "manage_partners" },
-    { title: "Banners", count: stats?.banners.total || 0, icon: ImageIcon, href: "/admin/banners", permission: "manage_banners" },
-    { title: "SEO Settings", count: stats?.seo.total || 0, icon: Search, href: "/admin/seo", permission: "manage_seo" },
-  ].filter(link => permissions.includes(link.permission));
+    { title: "Products", count: stats?.products?.total || 0, icon: Package, href: "/admin/products", permission: "manage_products" },
+    { title: "Services", count: stats?.services?.total || 0, icon: Briefcase, href: "/admin/services", permission: "manage_services" },
+    { title: "Skills", count: stats?.skills?.total || 0, icon: GraduationCap, href: "/admin/skills", permission: "manage_skills" },
+    { title: "Blog Posts", count: stats?.blogs?.total || 0, icon: BookOpen, href: "/admin/blogs", permission: "manage_blogs" },
+    { title: "Reviews", count: stats?.reviews?.total || 0, icon: Quote, href: "/admin/reviews", permission: "manage_reviews" },
+    { title: "Partners", count: stats?.partners?.total || 0, icon: Users, href: "/admin/partners", permission: "manage_partners" },
+    { title: "Banners", count: stats?.banners?.total || 0, icon: ImageIcon, href: "/admin/banners", permission: "manage_banners" },
+    { title: "SEO Settings", count: stats?.seo?.total || 0, icon: Search, href: "/admin/seo", permission: "manage_seo" },
+  ].filter(link => isSuperOrAdmin || permissions.includes(link.permission));
 
   if (loading) {
     return (

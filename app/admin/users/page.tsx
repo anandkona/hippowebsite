@@ -154,8 +154,7 @@ export default function UsersAdmin() {
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="text-3xl font-bold tracking-tight">Team Management</h3>
-          <p className="text-muted-foreground text-sm mt-1">Manage users and assign custom roles.</p>
+          <h3 className="text-3xl font-bold tracking-tight">Users</h3>
         </div>
         <button 
           className="flex items-center gap-2 bg-primary text-primary-foreground px-4 py-2 rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors shadow-sm"
@@ -241,11 +240,11 @@ export default function UsersAdmin() {
       )}
 
       {!showForm && (
-        <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden overflow-x-auto">
+        <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden overflow-x-auto scrollbar-hide">
           <table className="w-full text-left text-sm whitespace-nowrap relative">
             <thead className="bg-muted/50 border-b border-border/50 backdrop-blur-xl">
               <tr>
-                <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider w-16">#</th>
+                <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider w-16 text-center">S.No</th>
                 <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">User</th>
                 <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Role & Permissions</th>
                 <th className="px-6 py-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Joined Date</th>
@@ -255,7 +254,9 @@ export default function UsersAdmin() {
             <tbody className="divide-y divide-border/50">
               {users.map((u, index) => (
                 <tr key={u.id} className="group hover:bg-muted/30 transition-all duration-200">
-                  <td className="px-6 py-4 text-sm font-medium text-muted-foreground">{index + 1}</td>
+                  <td className="px-6 py-4 text-xs font-mono text-muted-foreground text-center">
+                    {index + 1}
+                  </td>
                   <td className="px-6 py-4">
                     <div className="flex flex-col">
                       <span className="font-semibold text-foreground group-hover:text-primary transition-colors">{u.username}</span>

@@ -49,12 +49,12 @@ const Navbar = ({ products = [], services = [] }: { products?: any[], services?:
       label: "Products",
       href: "/#products",
       children: products.length > 0
-        ? products.map(p => ({ label: p.name, href: `/${p.product_id}` }))
+        ? products.map(p => ({ label: p.name, href: `/products/${p.product_id}` }))
         : [
-          { label: "HIPPOCX", href: "/hippocx" },
-          { label: "HIPPOAQUA", href: "/hippoaqua" },
-          { label: "HIPPO BUILDX", href: "/hippobuildx" },
-          { label: "HIPPO MINT", href: "/hippomint" },
+          { label: "HIPPOCX", href: "/products/hippocx" },
+          { label: "HIPPOAQUA", href: "/products/hippoaqua" },
+          { label: "HIPPO BUILDX", href: "/products/hippobuildx" },
+          { label: "HIPPO MINT", href: "/products/hippomint" },
         ]
     },
     {

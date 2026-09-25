@@ -14,7 +14,7 @@ export async function GET() {
 export async function POST(request: Request) {
   const user = await verifyAuth(request);
   if (!user) return unauthorizedResponse();
-  if (user.role !== 'admin') return forbiddenResponse();
+  if (user.role === 'viewer') return forbiddenResponse();
 
   try {
     const { page_path, title, description, keywords } = await request.json();
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
 export async function DELETE(request: Request) {
   const user = await verifyAuth(request);
   if (!user) return unauthorizedResponse();
-  if (user.role !== 'admin') return forbiddenResponse();
+  if (user.role === 'viewer') return forbiddenResponse();
 
   try {
     const url = new URL(request.url);

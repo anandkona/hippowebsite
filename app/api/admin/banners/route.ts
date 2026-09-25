@@ -14,7 +14,7 @@ export async function GET() {
 export async function POST(request: Request) {
   const user = await verifyAuth(request);
   if (!user) return unauthorizedResponse();
-  if (user.role !== 'admin') return forbiddenResponse();
+  if (user.role === 'viewer') return forbiddenResponse();
 
   try {
     const { title, subtitle, image_url, is_active } = await request.json();
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   const user = await verifyAuth(request);
   if (!user) return unauthorizedResponse();
-  if (user.role !== 'admin') return forbiddenResponse();
+  if (user.role === 'viewer') return forbiddenResponse();
 
   try {
     const { id, title, subtitle, image_url, is_active } = await request.json();
@@ -54,7 +54,7 @@ export async function PUT(request: Request) {
 export async function DELETE(request: Request) {
   const user = await verifyAuth(request);
   if (!user) return unauthorizedResponse();
-  if (user.role !== 'admin') return forbiddenResponse();
+  if (user.role === 'viewer') return forbiddenResponse();
 
   try {
     const url = new URL(request.url);

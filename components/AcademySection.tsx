@@ -118,7 +118,7 @@ const AcademySection = ({ skills = [] }: { skills?: Skill[] }) => (
           className="w-full pt-8 border-t border-border/50"
         >
           <div className="mb-10 text-center flex flex-col items-center">
-            <h3 className="text-2xl md:text-3xl font-bold text-foreground">Skills We Offer</h3>
+            <h3 className="text-2xl md:text-3xl font-bold text-foreground">Skills We Deliver</h3>
             <div className="h-1 w-16 bg-primary mt-4 rounded-full"></div>
           </div>
 

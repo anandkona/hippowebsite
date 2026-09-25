@@ -35,12 +35,13 @@ export default function BlogsSection({ blogs }: { blogs: Blog[] }) {
   return (
     <section id="blog" className="py-24 bg-muted/30 overflow-hidden">
       <div className="container mx-auto px-4 md:px-6 max-w-7xl">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-16 gap-6">
+        <div className="relative mb-12 sm:mb-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
+            className="text-center max-w-3xl mx-auto px-4"
           >
             <span className="inline-block rounded-full bg-primary/10 px-4 py-1.5 text-primary text-xs font-bold uppercase tracking-[0.2em] mb-4">
               Insights & Thought Leadership
@@ -50,9 +51,11 @@ export default function BlogsSection({ blogs }: { blogs: Blog[] }) {
             </h2>
           </motion.div>
           
-          <Link href="#blog" className="hidden md:inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all text-sm">
-            View All <ArrowRight className="h-4 w-4" />
-          </Link>
+          <div className="mt-6 md:mt-0 md:absolute md:right-0 md:bottom-2 flex justify-center md:justify-end">
+            <Link href="/blogs" className="inline-flex items-center gap-2 text-primary font-semibold hover:gap-3 transition-all text-sm group">
+              View All <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
         </div>
 
         <div className="relative group/nav flex items-center gap-4">

@@ -3,19 +3,18 @@
 import { useState } from "react";
 import BannersCMS from "../banners/page";
 import SEOCMS from "../seo/page";
-import { ImageIcon, Users, Search } from "lucide-react";
+import { ImageIcon, Search } from "lucide-react";
 
 export default function AdminHomePage() {
   const [activeTab, setActiveTab] = useState<"banners" | "seo">("banners");
 
   const tabs = [
-    { id: "banners", label: "Banners", icon: ImageIcon },
+    { id: "banners", label: "Hero Banners", icon: ImageIcon },
     { id: "seo", label: "SEO Settings", icon: Search },
   ];
 
   return (
     <div className="space-y-6">
-
       <div className="border-b border-border/50 flex justify-between items-end overflow-x-auto scrollbar-hide w-full">
         <nav className="-mb-px flex space-x-6 sm:space-x-8 px-1 min-w-max" aria-label="Tabs">
           {tabs.map((tab) => {

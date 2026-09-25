@@ -37,6 +37,9 @@ export async function GET(request: Request) {
     const skillsTotal = await getCount('skills');
     const skillsActive = await getCount('skills', 'is_active = true');
 
+    const reviewsTotal = await getCount('reviews');
+    const reviewsActive = await getCount('reviews', 'is_active = true');
+
     return NextResponse.json({
       banners: { total: bannersTotal, active: bannersActive },
       partners: { total: partnersTotal },
@@ -44,7 +47,8 @@ export async function GET(request: Request) {
       seo: { total: seoTotal },
       products: { total: productsTotal, active: productsActive },
       services: { total: servicesTotal, active: servicesActive },
-      skills: { total: skillsTotal, active: skillsActive }
+      skills: { total: skillsTotal, active: skillsActive },
+      reviews: { total: reviewsTotal, active: reviewsActive }
     });
   } catch (error) {
     console.error('Failed to fetch stats:', error);

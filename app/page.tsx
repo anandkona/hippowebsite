@@ -14,7 +14,7 @@ import ReviewsSection from "@/components/ReviewsSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import FloatingChat from "@/components/chatbot/FloatingChat";
-import { getActiveBanners, getActivePartners, getSeoMetadata, getActiveProducts, getActiveServices, getActiveSkills, getActiveBlogs } from "@/lib/data";
+import { getActiveBanners, getActivePartners, getSeoMetadata, getActiveProducts, getActiveServices, getActiveSkills, getActiveBlogs, getActiveReviews } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +36,7 @@ export default async function Home() {
   const services = await getActiveServices();
   const skills = await getActiveSkills();
   const blogs = await getActiveBlogs();
+  const reviews = await getActiveReviews();
 
   return (
     <div className="flex flex-col min-h-screen font-sans scroll-pt-20 lg:scroll-pt-24">
@@ -64,7 +65,7 @@ export default async function Home() {
       <AcademySection skills={skills} />
       <PartnersSection partners={partners} />
       <BlogSection blogs={blogs} />
-      <ReviewsSection />
+      <ReviewsSection reviews={reviews} />
       <ContactSection />
 
       {/* Floating Chat Widget */}

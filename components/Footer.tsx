@@ -31,9 +31,10 @@ const addresses = [
 ];
 
 const products = [
-  { label: "HIPPOCX", href: "https://www.hippoclouds.com/#hippocx" },
-  { label: "HIPPOAQUA", href: "https://www.hippoclouds.com/#hippoaqua" },
-  { label: "HIPPO BUILDX", href: "https://www.hippoclouds.com/#hippobuildx" },
+  { label: "HIPPOCX", href: "/products/hippocx" },
+  { label: "HIPPOAQUA", href: "/products/hippoaqua" },
+  { label: "HIPPO BUILDX", href: "/products/hippobuildx" },
+  { label: "HIPPO MINT", href: "/products/hippomint" },
 ];
 
 const services = [

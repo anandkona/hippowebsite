@@ -15,6 +15,7 @@ export const PAGE_PERMISSIONS: Record<string, string> = {
   "/admin/banners": "manage_banners",
   "/admin/users": "manage_team",
   "/admin/roles": "manage_team",
+  "/admin/reviews": "manage_reviews",
 };
 
 export function usePermission(requiredPermission: string | null) {
@@ -34,8 +35,17 @@ export function usePermission(requiredPermission: string | null) {
         return;
       }
 
+      const role = localStorage.getItem("user_role");
+      const isAdmin = localStorage.getItem("user_isAdmin") === "true";
       const perms = JSON.parse(localStorage.getItem("user_permissions") || "[]");
-      if (perms.includes(requiredPermission) || perms.includes("manage_all")) {
+
+      if (
+        role === "Super Admin" ||
+        isAdmin ||
+        perms.includes("manage_team") ||
+        perms.includes("manage_all") ||
+        perms.includes(requiredPermission)
+      ) {
         setAllowed(true);
       } else {
         setAllowed(false);

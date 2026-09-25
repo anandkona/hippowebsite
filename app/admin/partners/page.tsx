@@ -344,7 +344,7 @@ export default function PartnersCMS() {
           </button>
         </div>
       ) : (
-        <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-x-auto overflow-y-auto max-h-[80vh] scrollbar-hide">
+        <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden overflow-x-auto scrollbar-hide">
           <table className="w-full text-left text-sm whitespace-nowrap relative">
             <thead className="bg-muted border-b border-border/50 sticky top-0 z-10 shadow-sm">
               <tr>

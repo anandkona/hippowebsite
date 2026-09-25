@@ -1,13 +1,26 @@
 import { query } from './db';
+import {
+  FALLBACK_PRODUCTS,
+  FALLBACK_PRODUCTS_LIST,
+  FALLBACK_SERVICES,
+  FALLBACK_SERVICES_LIST,
+  FALLBACK_BANNERS,
+  FALLBACK_PARTNERS,
+  FALLBACK_SKILLS,
+  FALLBACK_BLOGS,
+  FALLBACK_REVIEWS
+} from './fallbackData';
 
 export async function getActiveBanners() {
   try {
     const { rows } = await query('SELECT * FROM banners WHERE is_active = true ORDER BY id DESC');
-    return rows;
+    if (rows && rows.length > 0) {
+      return rows;
+    }
   } catch (error) {
     console.error('Failed to fetch banner:', error);
-    return null;
   }
+  return FALLBACK_BANNERS;
 }
 
 export async function getActivePartners() {
@@ -15,11 +28,13 @@ export async function getActivePartners() {
     const { rows } = await query(
       'SELECT * FROM partners WHERE is_active = true ORDER BY CASE WHEN display_order = 0 THEN 999999 ELSE display_order END ASC, id ASC'
     );
-    return rows;
+    if (rows && rows.length > 0) {
+      return rows;
+    }
   } catch (error) {
     console.error('Failed to fetch active partners:', error);
-    return [];
   }
+  return FALLBACK_PARTNERS;
 }
 
 export async function getActiveSkills() {
@@ -27,11 +42,13 @@ export async function getActiveSkills() {
     const { rows } = await query(
       'SELECT * FROM skills WHERE is_active = true ORDER BY CASE WHEN display_order = 0 THEN 999999 ELSE display_order END ASC, id ASC'
     );
-    return rows;
+    if (rows && rows.length > 0) {
+      return rows;
+    }
   } catch (error) {
     console.error('Failed to fetch active skills:', error);
-    return [];
   }
+  return FALLBACK_SKILLS;
 }
 
 export async function getActiveBlogs() {
@@ -39,21 +56,26 @@ export async function getActiveBlogs() {
     const { rows } = await query(
       'SELECT * FROM blogs WHERE is_active = true ORDER BY published_date DESC, id DESC'
     );
-    return rows;
+    if (rows && rows.length > 0) {
+      return rows;
+    }
   } catch (error) {
     console.error('Failed to fetch active blogs:', error);
-    return [];
   }
+  return FALLBACK_BLOGS;
 }
 
 export async function getBlogById(id: string) {
   try {
     const { rows } = await query('SELECT * FROM blogs WHERE id = $1', [id]);
-    return rows[0] || null;
+    if (rows && rows[0]) {
+      return rows[0];
+    }
   } catch (error) {
     console.error('Failed to fetch blog by id:', error);
-    return null;
   }
+  const fallback = FALLBACK_BLOGS.find(b => String(b.id) === String(id));
+  return fallback || null;
 }
 
 export async function getSeoMetadata(pagePath: string) {
@@ -71,11 +93,13 @@ export async function getActiveProducts() {
     const { rows } = await query(
       'SELECT * FROM products WHERE is_active = true ORDER BY CASE WHEN display_order = 0 THEN 999999 ELSE display_order END ASC, id ASC'
     );
-    return rows;
+    if (rows && rows.length > 0) {
+      return rows;
+    }
   } catch (error) {
     console.error('Failed to fetch active products:', error);
-    return [];
   }
+  return FALLBACK_PRODUCTS_LIST;
 }
 
 export async function getProductBySlug(slug: string) {
@@ -84,11 +108,13 @@ export async function getProductBySlug(slug: string) {
       'SELECT * FROM products WHERE LOWER(product_id) = LOWER($1)',
       [slug]
     );
-    return rows[0] || null;
+    if (rows && rows.length > 0) {
+      return rows[0];
+    }
   } catch (error) {
     console.error('Failed to fetch product by slug:', error);
-    return null;
   }
+  return FALLBACK_PRODUCTS[slug.toLowerCase()] || null;
 }
 
 export async function getActiveServices() {
@@ -96,11 +122,13 @@ export async function getActiveServices() {
     const { rows } = await query(
       'SELECT * FROM services WHERE is_active = true ORDER BY CASE WHEN display_order = 0 THEN 999999 ELSE display_order END ASC, id ASC'
     );
-    return rows;
+    if (rows && rows.length > 0) {
+      return rows;
+    }
   } catch (error) {
     console.error('Failed to fetch active services:', error);
-    return [];
   }
+  return FALLBACK_SERVICES_LIST;
 }
 
 export async function getServiceBySlug(slug: string) {
@@ -109,10 +137,26 @@ export async function getServiceBySlug(slug: string) {
       'SELECT * FROM services WHERE LOWER(slug) = LOWER($1)',
       [slug]
     );
-    return rows[0] || null;
+    if (rows && rows.length > 0) {
+      return rows[0];
+    }
   } catch (error) {
     console.error('Failed to fetch service by slug:', error);
-    return null;
   }
+  return FALLBACK_SERVICES[slug.toLowerCase()] || null;
+}
+
+export async function getActiveReviews() {
+  try {
+    const { rows } = await query(
+      'SELECT * FROM reviews WHERE is_active = true ORDER BY CASE WHEN display_order = 0 THEN 999999 ELSE display_order END ASC, id ASC'
+    );
+    if (rows && rows.length > 0) {
+      return rows;
+    }
+  } catch (error) {
+    console.error('Failed to fetch active reviews:', error);
+  }
+  return FALLBACK_REVIEWS;
 }
 

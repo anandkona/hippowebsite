@@ -69,7 +69,7 @@ const ProductsSection = ({ products = [] }: { products?: any[] }) => {
             
             // Check if product should redirect to external website
             const pageContent = product.page_content || {};
-            let productLink = `/${currentId}`;
+            let productLink = `/products/${currentId}`;
             let linkTarget = "_self";
             
             if (pageContent.isWebsite && pageContent.websiteLink) {
