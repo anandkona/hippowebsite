@@ -17,14 +17,15 @@ export default function PartnerLogoCard({ partner }: PartnerLogoCardProps) {
       href={partner.website_url || '#'}
       target="_blank"
       rel="noreferrer"
-      className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex items-center justify-center min-w-[160px] h-[88px] hover:shadow-md hover:-translate-y-0.5 transition-all"
+      className="flex items-center justify-center flex-shrink-0 group rounded-xl border border-border/50 bg-background/80 px-5 py-3 shadow-sm transition-all hover:border-primary/40 hover:shadow-md min-w-[180px] h-[86px]"
     >
       {partner.logo_url ? (
         <>
           <img
             src={partner.logo_url}
             alt={partner.name}
-            className="w-full h-full object-cover"
+            className="max-w-full max-h-full object-contain transition-transform duration-300 group-hover:scale-105"
+            loading="lazy"
             onError={(e) => {
               e.currentTarget.style.display = 'none';
               if (e.currentTarget.nextElementSibling) {

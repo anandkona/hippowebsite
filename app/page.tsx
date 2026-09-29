@@ -45,18 +45,34 @@ export default async function Home() {
 
       {/* Partner Logos Banner */}
       {partners && partners.length > 0 && (
-        <div className="relative z-20 bg-slate-50/50 py-12 w-full border-b border-border">
-          <div className="max-w-7xl mx-auto px-6 md:px-12">
-            <h3 className="text-center text-sm font-bold text-blue-700 tracking-[0.2em] mb-10 uppercase">
-              Companies We Serve
-            </h3>
-            <div className="flex flex-wrap items-center justify-center gap-6">
-              {partners.map((partner) => (
-                <PartnerLogoCard key={partner.id} partner={partner as any} />
-              ))}
+        <section className="py-16 bg-muted/30 border-y border-border/50">
+          <div className="mx-auto max-w-7xl px-6 lg:px-8 xl:px-12">
+            <div className="text-center mb-10">
+              <h3 className="text-sm font-bold text-blue-700 tracking-[0.2em] uppercase">
+                Companies We Serve
+              </h3>
+            </div>
+            <div className="relative overflow-hidden">
+              <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-muted/30 to-transparent"></div>
+              <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-muted/30 to-transparent"></div>
+              
+              <div 
+                className="flex w-max animate-[scroll_35s_linear_infinite] hover:[animation-play-state:paused]" 
+              >
+                <div className="flex gap-8 md:gap-12 pr-8 md:pr-12">
+                  {partners.map((partner) => (
+                    <PartnerLogoCard key={partner.id} partner={partner as any} />
+                  ))}
+                </div>
+                <div className="flex gap-8 md:gap-12 pr-8 md:pr-12">
+                  {partners.map((partner) => (
+                    <PartnerLogoCard key={`dup-${partner.id}`} partner={partner as any} />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </section>
       )}
 
       <AboutSection />
