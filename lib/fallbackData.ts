@@ -1070,3 +1070,32 @@ export const FALLBACK_REVIEWS: ReviewItem[] = [
     is_active: true
   }
 ];
+
+export const FALLBACK_TALLY_SERVICES: Record<string, any> = {
+    "tally-xcelerator-partner": {
+      id: 1,
+      slug: "tally-xcelerator-partner",
+      name: "Tally-Xcelerator Partner",
+      title: "Tally-Xcelerator Partner",
+      description: "As an official Tally-Xcelerator partner, we deliver enterprise-grade Tally implementations, custom integrations, and ongoing support. Streamline your accounting, inventory, GST compliance, and business operations with India's most trusted business software.",
+      is_active: true,
+      display_order: 1,
+      icon_name: "Handshake",
+      page_content: {
+        heroTitle: "Tally-Xcelerator Partner",
+        heroSubtitle: "As an official Tally-Xcelerator partner, we deliver enterprise-grade Tally implementations, custom integrations, and ongoing support. Streamline your accounting, inventory, GST compliance, and business operations with India's most trusted business software.",
+        heroTag: "ENTERPRISE TALLY SOLUTIONS",
+        detailedFeatures: [
+          { title: "Authorized Tally-Xcelerator Partner", description: "Official partnership delivering certified solutions." },
+          { title: "Certified Implementation Experts", description: "Expert deployment for your enterprise needs." },
+          { title: "Pan-India Service Network", description: "Seamless support across India." },
+          { title: "Tally Implementation", description: "End-to-end setup and configuration." },
+          { title: "Custom Integration", description: "Tailored integrations for existing workflows." },
+          { title: "GST Compliance", description: "Automated and accurate GST filing." },
+          { title: "Training & Support", description: "Ongoing assistance and team training." }
+        ]
+      }
+    }
+  };
+
+

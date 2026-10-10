@@ -183,7 +183,7 @@ export default function ServiceEditorCMS() {
     <PermissionGate permission="manage_services">
     <div className="max-w-6xl mx-auto pb-20 pt-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 -mt-6">
         <div>
           <Link href="/admin/services" className="text-muted-foreground hover:text-primary mb-2 flex items-center text-sm font-medium transition-colors">
             <ArrowLeft className="h-4 w-4 mr-1" /> Back to Services
@@ -201,12 +201,12 @@ export default function ServiceEditorCMS() {
         {/* Horizontal Tab Navigation */}
         <div className="w-full">
           <div className="border-b border-border">
-            <nav className="-mb-px flex space-x-8 overflow-x-auto hide-scrollbar px-2">
+            <nav className="-mb-px flex space-x-1 overflow-x-auto custom-scrollbar px-1">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`whitespace-nowrap border-b-2 py-4 px-3 sm:px-4 text-sm font-medium transition-colors flex items-center gap-2 ${activeTab === tab.id
+                  className={`whitespace-nowrap border-b-2 py-3 px-2 sm:px-3 text-sm font-medium transition-colors flex items-center gap-1.5 ${activeTab === tab.id
                     ? "border-primary text-primary"
                     : "border-transparent text-muted-foreground hover:border-border hover:text-foreground"
                     }`}
@@ -333,7 +333,7 @@ export default function ServiceEditorCMS() {
             {/* STATS TAB */}
             {activeTab === "stats" && (
               <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between -mt-4">
                   <h3 className="text-lg font-bold">Stat Counters</h3>
                   <button type="button" onClick={() => updatePageContent("stats", [...page_content.stats, { value: "99.9%", label: "Uptime", subtitle: "Global" }])} className="text-xs font-semibold bg-primary/10 text-primary px-3 py-1.5 rounded-lg flex items-center gap-1 hover:bg-primary/20 transition-colors">
                     <Plus className="h-3 w-3" /> Add Stat
@@ -552,3 +552,7 @@ export default function ServiceEditorCMS() {
     </PermissionGate>
   );
 }
+
+
+
+

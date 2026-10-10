@@ -1,4 +1,4 @@
-import { getActiveProducts, getActiveServices } from "@/lib/data";
+import { getActiveProducts, getActiveServices , getActiveTallyServices } from "@/lib/data";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
@@ -7,10 +7,11 @@ import { AlertCircle } from "lucide-react";
 export default async function NotFound() {
   const products = await getActiveProducts();
   const services = await getActiveServices();
+  const activeTallyServices = await getActiveTallyServices();
 
   return (
     <div className="flex flex-col min-h-screen font-sans bg-background">
-      <Navbar products={products} services={services} />
+      <Navbar products={products} services={services} tallyServices={activeTallyServices} />
       
       <main className="flex-1 flex flex-col items-center justify-center p-6 text-center pt-32 pb-24 relative overflow-hidden">
         {/* Background Decorative Blob */}

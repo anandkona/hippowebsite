@@ -17,11 +17,11 @@ export async function POST(request: Request) {
   if (user.role === 'viewer') return forbiddenResponse();
 
   try {
-    const { name, logo_url, website_url, display_order, is_active, seo_title, seo_description, seo_keywords } = await request.json();
+    const { name, logo_url, website_url, display_order, is_active, is_tally_partner, seo_title, seo_description, seo_keywords } = await request.json();
     
     const { rows } = await query(
-      'INSERT INTO partners (name, logo_url, website_url, display_order, is_active, seo_title, seo_description, seo_keywords) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
-      [name, logo_url, website_url, display_order || 0, is_active !== false, seo_title || null, seo_description || null, seo_keywords || null]
+      'INSERT INTO partners (name, logo_url, website_url, display_order, is_active, is_tally_partner, seo_title, seo_description, seo_keywords) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
+      [name, logo_url, website_url, display_order || 0, is_active !== false, is_tally_partner || false, seo_title || null, seo_description || null, seo_keywords || null]
     );
     return NextResponse.json(rows[0]);
   } catch (error) {
@@ -35,11 +35,11 @@ export async function PUT(request: Request) {
   if (user.role === 'viewer') return forbiddenResponse();
 
   try {
-    const { id, name, logo_url, website_url, display_order, is_active, seo_title, seo_description, seo_keywords } = await request.json();
+    const { id, name, logo_url, website_url, display_order, is_active, is_tally_partner, seo_title, seo_description, seo_keywords } = await request.json();
 
     const { rows } = await query(
-      'UPDATE partners SET name = $1, logo_url = $2, website_url = $3, display_order = $4, is_active = $5, seo_title = $6, seo_description = $7, seo_keywords = $8 WHERE id = $9 RETURNING *',
-      [name, logo_url, website_url, display_order || 0, is_active !== false, seo_title || null, seo_description || null, seo_keywords || null, id]
+      'UPDATE partners SET name = $1, logo_url = $2, website_url = $3, display_order = $4, is_active = $5, is_tally_partner = $6, seo_title = $7, seo_description = $8, seo_keywords = $9 WHERE id = $10 RETURNING *',
+      [name, logo_url, website_url, display_order || 0, is_active !== false, is_tally_partner || false, seo_title || null, seo_description || null, seo_keywords || null, id]
     );
     return NextResponse.json(rows[0]);
   } catch (error) {
@@ -66,4 +66,6 @@ export async function DELETE(request: Request) {
 }
 
 export const dynamic = 'force-dynamic';
+
+
 

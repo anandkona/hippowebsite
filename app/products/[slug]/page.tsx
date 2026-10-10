@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { getProductBySlug, getActiveProducts, getActiveServices } from "@/lib/data";
+import { getProductBySlug, getActiveProducts, getActiveServices , getActiveTallyServices } from "@/lib/data";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { CheckCircle2, ChevronDown, Rocket, ArrowRight } from "lucide-react";
@@ -54,6 +54,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const product = await getProductBySlug(slug);
   const products = await getActiveProducts();
   const services = await getActiveServices();
+  const activeTallyServices = await getActiveTallyServices();
 
   if (!product) {
     notFound();
@@ -72,7 +73,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
   return (
     <div className="flex flex-col min-h-screen font-sans bg-white selection:bg-blue-500/30">
-      <Navbar products={products} services={services} />
+      <Navbar products={products} services={services} tallyServices={activeTallyServices} />
 
       <section className="relative pt-24 pb-16 md:pt-32 md:pb-24 lg:pt-40 lg:pb-32 overflow-hidden flex items-center justify-center min-h-[70vh]">
 
@@ -103,13 +104,34 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               {heroSubtitle}
             </p>
             <div className="mt-6 lg:mt-9 flex flex-col sm:flex-row gap-4 justify-center pt-2 w-full sm:w-auto">
-              <Link href={pc.heroPrimaryCtaLink || "/contact"} className="inline-flex items-center justify-center gap-2 rounded-full bg-blue-600 px-8 py-4 text-sm font-bold text-white shadow-xl shadow-black/30 transition-all hover:bg-blue-500 hover:scale-105 w-full sm:w-auto">
-                {pc.heroPrimaryCtaText || "Ready to Start Journey"} <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link href={pc.heroSecondaryCtaLink || "#capabilities"} className="inline-flex items-center justify-center rounded-full border border-white/30 bg-white/5 backdrop-blur-sm px-8 py-4 text-sm font-bold text-white transition-all hover:bg-white/20 w-full sm:w-auto">
-                {pc.heroSecondaryCtaText || "Explore Expert"}
-              </Link>
-            </div>
+                {pc.isWebsite && pc.websiteLink && (
+                  <Link href={pc.websiteLink.startsWith("http") ? pc.websiteLink : "https://" + pc.websiteLink} target="_blank" className="inline-flex items-center justify-center gap-2 rounded-full bg-blue-600 px-8 py-4 text-sm font-bold text-white shadow-xl shadow-black/30 transition-all hover:bg-blue-500 hover:scale-105 w-full sm:w-auto">
+                    Visit Website <ArrowRight className="h-4 w-4" />
+                  </Link>
+                )}
+                {pc.isApp && (
+                  <>
+                    {pc.iosLink && (
+                      <Link href={pc.iosLink.startsWith("http") ? pc.iosLink : "https://" + pc.iosLink} target="_blank" className="inline-flex items-center justify-center gap-2 rounded-full bg-black px-8 py-4 text-sm font-bold text-white shadow-xl shadow-black/30 transition-all hover:scale-105 w-full sm:w-auto">
+                        Get on App Store
+                      </Link>
+                    )}
+                    {pc.androidLink && (
+                      <Link href={pc.androidLink.startsWith("http") ? pc.androidLink : "https://" + pc.androidLink} target="_blank" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#3DDC84] px-8 py-4 text-sm font-bold text-black shadow-xl shadow-black/30 transition-all hover:scale-105 w-full sm:w-auto">
+                        Get on Google Play
+                      </Link>
+                    )}
+                  </>
+                )}
+                {(!pc.isWebsite && !pc.isApp) && (
+                  <Link href={pc.heroPrimaryCtaLink || "/contact"} className="inline-flex items-center justify-center gap-2 rounded-full bg-blue-600 px-8 py-4 text-sm font-bold text-white shadow-xl shadow-black/30 transition-all hover:bg-blue-500 hover:scale-105 w-full sm:w-auto">
+                    {pc.heroPrimaryCtaText || "Ready to Start Journey"} <ArrowRight className="h-4 w-4" />
+                  </Link>
+                )}
+                <Link href={pc.heroSecondaryCtaLink || "#capabilities"} className="inline-flex items-center justify-center rounded-full border border-white/30 bg-white/5 backdrop-blur-sm px-8 py-4 text-sm font-bold text-white transition-all hover:bg-white/20 w-full sm:w-auto">
+                  {pc.heroSecondaryCtaText || "Explore Expert"}
+                </Link>
+              </div>
           </FadeInUp>
         </div>
       </section>
@@ -289,3 +311,5 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     </div>
   );
 }
+
+

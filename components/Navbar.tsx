@@ -29,12 +29,12 @@ const socialLinks = [
 const baseNavItems = [
   { label: "Home", href: "/#home" },
   { label: "Skill Hub", href: "/#academy" },
-  { label: "Partners", href: "/#partners" },
+    { label: "Tally Services", href: "/tally-services" },
   { label: "Blogs", href: "/#blog" },
   { label: "Contact", href: "/contact" },
 ];
 
-const Navbar = ({ products = [], services = [] }: { products?: any[], services?: any[] }) => {
+const Navbar = ({ products = [], services = [], tallyServices = [] }: { products?: any[], services?: any[], tallyServices?: any[] }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [mobileDropdown, setMobileDropdown] = useState<string | null>(null);
@@ -72,7 +72,15 @@ const Navbar = ({ products = [], services = [] }: { products?: any[], services?:
           { label: "BPO Services", href: "/#services" },
         ]
     },
-    ...baseNavItems.slice(1) // Academy, Partners, Blogs, Contact
+    baseNavItems[1], // Skill Hub
+      {
+        label: "Tally Services",
+        href: "/tally-services",
+        children: tallyServices && tallyServices.length > 0
+          ? tallyServices.map(ts => ({ label: ts.title || ts.name, href: `/tally-services/${ts.slug}` }))
+          : undefined
+      },
+      ...baseNavItems.slice(3) // Blogs, Contact
   ];
 
   const email = "info@hippoclouds.com";
@@ -80,35 +88,43 @@ const Navbar = ({ products = [], services = [] }: { products?: any[], services?:
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll);
+      handleScroll();
+      window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    if (href.startsWith('/#') && pathname === '/') {
-      const targetId = href.substring(2);
-      const element = document.getElementById(targetId);
-      if (element) {
+      const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith('/#')) {
+      if (pathname === '/') {
+        const targetId = href.substring(2);
+        const element = document.getElementById(targetId);
+        if (element) {
+          e.preventDefault();
+          const navbarHeight = 72;
+          const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+
+          window.scrollTo({
+            top: elementPosition - navbarHeight,
+            behavior: 'smooth'
+          });
+        }
+      } else {
+        // If we are on another page, force a hard navigation to ensure it doesn't get stuck
         e.preventDefault();
-        const navbarHeight = 72; // Approximate height of the navbar
-        const elementPosition = element.getBoundingClientRect().top + window.scrollY;
-
-        window.scrollTo({
-          top: elementPosition - navbarHeight,
-          behavior: 'smooth'
-        });
-
-        setMobileOpen(false);
+        window.location.href = href;
       }
+      setMobileOpen(false);
+    } else {
+      setMobileOpen(false);
     }
   };
 
   return (
     <header className="fixed top-0 left-0 right-0 w-full" style={{ zIndex: 99999 }}>
       {/* Top Bar - Desktop Only */}
-      {isHomePage && (
+      {true && (
         <div className={`hidden lg:block transition-all duration-500 overflow-hidden ${scrolled ? 'max-h-0 opacity-0 -translate-y-full' : 'max-h-10 opacity-100'}`}>
-          <div className="bg-transparent py-1">
+          <div className={isHomePage ? "bg-transparent py-1" : "bg-gray-900 py-1"}>
             <div className="mx-auto max-w-7xl h-full flex items-center justify-between px-6 lg:px-8 xl:px-12">
               <div className="flex items-center gap-6">
                 <a href={`mailto:${email}`} className="flex items-center gap-2 text-[10px] font-bold tracking-wider text-white/60 hover:text-primary transition-colors">
@@ -145,8 +161,7 @@ const Navbar = ({ products = [], services = [] }: { products?: any[], services?:
 
       {/* Main Navbar */}
       <nav className={`transition-all duration-500 h-16 lg:h-[72px] w-full relative z-[120] ${
-        isHomePage && !scrolled
-          ? 'bg-transparent'
+        isHomePage && !scrolled ? 'bg-transparent'
           : 'bg-white shadow-md border-b border-gray-100'
       }`}>
         <div className="mx-auto max-w-7xl h-full flex items-center justify-between px-6 lg:px-8 xl:px-12">
@@ -356,3 +371,15 @@ const Navbar = ({ products = [], services = [] }: { products?: any[], services?:
 };
 
 export default Navbar;
+
+
+
+
+
+
+
+
+
+
+
+

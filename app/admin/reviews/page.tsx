@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Plus, Trash2, Eye, EyeOff, Loader2, Star, Pencil, X, Quote, Sparkles, Search, MessageSquareQuote } from "lucide-react";
+import { Plus, Trash2, Eye, EyeOff, Loader2, Star, Pencil, X, Quote, Sparkles, Search, MessageSquareQuote, Download, Filter } from "lucide-react";
 import PermissionGate from "@/components/admin/PermissionGate";
 
 export type Review = {
@@ -26,6 +26,34 @@ export default function ReviewsCMS() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedIds, setExpandedIds] = useState<Set<number>>(new Set());
+  const [filterRating, setFilterRating] = useState("all");
+  const [filterStatus, setFilterStatus] = useState("all");
+
+  const exportToExcel = () => {
+    const headers = ["ID", "Author", "Role", "Company", "Rating", "Content", "Status"];
+    const csvContent = [
+      headers.join(","),
+      ...filteredReviews.map(r => [
+        r.id,
+        `"${(r.author || "").replace(/"/g, '""')}"`,
+        `"${(r.role || "").replace(/"/g, '""')}"`,
+        `"${(r.company || "").replace(/"/g, '""')}"`,
+        r.stars,
+        `"${(r.content || "").replace(/"/g, '""')}"`,
+        r.is_active ? "Active" : "Hidden"
+      ].join(","))
+    ].join("\n");
+    
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `reviews_export_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const toggleRow = (id: number) => {
     setExpandedIds((prev) => {
@@ -178,6 +206,8 @@ export default function ReviewsCMS() {
   };
 
   const filteredReviews = reviews.filter((r) => {
+    if (filterRating !== "all" && r.stars.toString() !== filterRating) return false;
+    if (filterStatus !== "all" && (filterStatus === "active" ? !r.is_active : r.is_active)) return false;
     if (!searchQuery) return true;
     const q = searchQuery.toLowerCase();
     return (
@@ -205,9 +235,26 @@ export default function ReviewsCMS() {
           </div>
         </div>
 
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          {/* Search Input */}
-          <div className="relative flex-1 sm:w-64">
+        <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+          <div className="flex items-center gap-2 w-full sm:w-auto bg-muted/30 p-1 rounded-xl border border-border/50">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-muted-foreground border-r border-border/50">
+              <Filter className="w-3.5 h-3.5" /> Filters
+            </div>
+            <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} className="bg-transparent border-none text-xs focus:ring-0 py-1.5 px-2 cursor-pointer font-medium text-foreground">
+              <option value="all">All Status</option>
+              <option value="active">Active</option>
+              <option value="hidden">Hidden</option>
+            </select>
+            <select value={filterRating} onChange={(e) => setFilterRating(e.target.value)} className="bg-transparent border-none text-xs focus:ring-0 py-1.5 px-2 cursor-pointer font-medium text-foreground">
+              <option value="all">All Ratings</option>
+              <option value="5">5 Stars</option>
+              <option value="4">4 Stars</option>
+              <option value="3">3 Stars</option>
+              <option value="2">2 Stars</option>
+              <option value="1">1 Star</option>
+            </select>
+          </div>
+          <div className="relative flex-1 sm:w-64 w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <input
               type="text"
@@ -217,24 +264,18 @@ export default function ReviewsCMS() {
               className="w-full pl-9 pr-3 py-2 bg-background border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
             />
           </div>
-
-          {userRole !== "viewer" && (
-            <button
-              onClick={() => {
-                resetForm();
-                setShowForm(true);
-              }}
-              className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors shadow-sm shrink-0"
-            >
-              <Plus className="h-4 w-4" />
-              Add Review
-            </button>
-          )}
+          <button
+            onClick={exportToExcel}
+            className="flex items-center gap-2 px-4 py-2 bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border border-emerald-200 rounded-xl text-sm font-semibold transition-colors shadow-sm shrink-0 w-full sm:w-auto justify-center"
+          >
+            <Download className="h-4 w-4" />
+            Export
+          </button>
         </div>
       </div>
 
       {/* Table Form Content */}
-      <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden overflow-x-auto scrollbar-hide">
+      <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden overflow-x-auto custom-scrollbar">
         {loading ? (
           <div className="flex justify-center items-center py-20">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -381,7 +422,7 @@ export default function ReviewsCMS() {
                       <MessageSquareQuote className="h-12 w-12 opacity-25 mb-3" />
                       <p className="text-sm font-semibold text-foreground">No reviews found</p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {searchQuery ? "Try refining your search query." : "Click 'Add Review' to create your first client review."}
+                        {searchQuery ? "Try refining your search query." : "No reviews available."}
                       </p>
                     </div>
                   </td>
@@ -542,3 +583,8 @@ export default function ReviewsCMS() {
     </PermissionGate>
   );
 }
+
+
+
+
+

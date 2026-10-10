@@ -60,7 +60,7 @@ export default function BlogsCMS() {
     <PermissionGate permission="manage_blogs">
     <div className="w-full space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center justify-between mb-2 -mt-4">
         <h2 className="text-2xl font-bold tracking-tight">Blogs</h2>
         <Link
           href="/admin/blogs/create"
@@ -71,16 +71,16 @@ export default function BlogsCMS() {
       </div>
 
       {/* Blogs Table */}
-      <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden overflow-x-auto scrollbar-hide">
+      <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden overflow-x-auto custom-scrollbar">
         <table className="w-full text-left text-sm whitespace-nowrap relative">
           <thead className="bg-muted border-b border-border/50 sticky top-0 z-10 shadow-sm">
             <tr>
-              <th className="px-6 py-4 font-medium text-foreground w-16">S.No</th>
-              <th className="px-6 py-4 font-medium text-foreground">Blog Post</th>
-              <th className="px-6 py-4 font-medium text-foreground">Category</th>
-              <th className="px-6 py-4 font-medium text-foreground">Date</th>
-              <th className="px-6 py-4 font-medium text-foreground">Status</th>
-              <th className="px-6 py-4 font-medium text-foreground text-right">Actions</th>
+              <th className="px-4 py-3 text-sm font-medium text-foreground w-16">S.No</th>
+              <th className="px-4 py-3 text-sm font-medium text-foreground">Blog Post</th>
+              <th className="px-4 py-3 text-sm font-medium text-foreground">Category</th>
+              <th className="px-4 py-3 text-sm font-medium text-foreground">Date</th>
+              <th className="px-4 py-3 text-sm font-medium text-foreground">Status</th>
+              <th className="px-4 py-3 text-sm font-medium text-foreground text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border/50">
@@ -90,8 +90,8 @@ export default function BlogsCMS() {
               <tr><td colSpan={6} className="text-center py-12 text-muted-foreground">No blogs found.</td></tr>
             ) : blogs.map((blog, index) => (
               <tr key={blog.id} className="group hover:bg-muted/30 transition-all duration-200">
-                <td className="px-6 py-4 text-muted-foreground">{index + 1}</td>
-                <td className="px-6 py-4 font-medium text-foreground min-w-[250px] max-w-[350px]">
+                <td className="px-4 py-3 text-sm text-muted-foreground">{index + 1}</td>
+                <td className="px-4 py-3 text-sm font-medium text-foreground min-w-[250px] max-w-[350px]">
                   <div className="flex items-center gap-3">
                     <div className="bg-sky-100 text-sky-600 rounded-lg flex-shrink-0 overflow-hidden w-10 h-10 flex items-center justify-center">
                       {blog.image_url ? (
@@ -108,24 +108,24 @@ export default function BlogsCMS() {
                     </div>
                   </div>
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-4 py-3 text-sm">
                   <span className="bg-muted px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wider text-slate-600 uppercase">
                     {blog.category}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-muted-foreground">
+                <td className="px-4 py-3 text-sm text-muted-foreground">
                   <div className="flex items-center gap-1.5">
                     <Calendar className="h-3.5 w-3.5" />
                     {new Date(blog.published_date).toLocaleDateString()}
                   </div>
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-4 py-3 text-sm">
                   <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${blog.is_active ? 'bg-emerald-100/50 text-emerald-700' : 'bg-amber-100/50 text-amber-700'}`}>
                     <span className={`h-1.5 w-1.5 rounded-full ${blog.is_active ? 'bg-emerald-600' : 'bg-amber-600'}`}></span>
                     {blog.is_active ? "Published" : "Draft"}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-right">
+                <td className="px-4 py-3 text-sm text-right">
                   <div className="flex items-center justify-end gap-2 opacity-70 group-hover:opacity-100 transition-opacity">
                     <Link
                       href={`/admin/blogs/${blog.id}`}
@@ -152,3 +152,7 @@ export default function BlogsCMS() {
     </PermissionGate>
   );
 }
+
+
+
+

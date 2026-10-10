@@ -15,7 +15,7 @@ export default function AdminHomePage() {
 
   return (
     <div className="space-y-6">
-      <div className="border-b border-border/50 flex justify-between items-end overflow-x-auto scrollbar-hide w-full">
+      <div className="border-b border-border/50 flex justify-between items-end overflow-x-auto custom-scrollbar w-full">
         <nav className="-mb-px flex space-x-6 sm:space-x-8 px-1 min-w-max" aria-label="Tabs">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
@@ -48,3 +48,4 @@ export default function AdminHomePage() {
     </div>
   );
 }
+

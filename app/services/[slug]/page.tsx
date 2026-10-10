@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { getServiceBySlug, getActiveProducts, getActiveServices } from "@/lib/data";
+import { getServiceBySlug, getActiveProducts, getActiveServices , getActiveTallyServices } from "@/lib/data";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { CheckCircle2, ChevronDown, Rocket, ArrowRight } from "lucide-react";
@@ -53,6 +53,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
   const service = await getServiceBySlug(slug);
   const products = await getActiveProducts();
   const services = await getActiveServices();
+  const activeTallyServices = await getActiveTallyServices();
 
   if (!service) {
     notFound();
@@ -71,7 +72,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
 
   return (
     <div className="flex flex-col min-h-screen font-sans bg-white selection:bg-blue-500/30">
-      <Navbar products={products} services={services} />
+      <Navbar products={products} services={services} tallyServices={activeTallyServices} />
 
       <section className="relative pt-24 pb-16 md:pt-32 md:pb-24 lg:pt-40 lg:pb-32 overflow-hidden bg-gradient-to-b from-[#0F172A] via-[#11243B] to-[#04405D] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">

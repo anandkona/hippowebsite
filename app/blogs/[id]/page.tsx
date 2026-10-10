@@ -1,4 +1,4 @@
-import { getBlogById, getActiveProducts, getActiveServices } from "@/lib/data";
+import { getBlogById, getActiveProducts, getActiveServices , getActiveTallyServices } from "@/lib/data";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { notFound } from "next/navigation";
@@ -30,6 +30,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
   // Fetch navigation data
   const products = await getActiveProducts();
   const services = await getActiveServices();
+  const activeTallyServices = await getActiveTallyServices();
 
   const dateStr = blog.published_date 
     ? new Date(blog.published_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) 
@@ -38,7 +39,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ id: s
 
   return (
     <div className="flex flex-col min-h-screen bg-white font-sans">
-      <Navbar products={products} services={services} />
+      <Navbar products={products} services={services} tallyServices={activeTallyServices} />
 
       <main className="flex-1 pt-32 pb-24 max-w-4xl mx-auto px-6 lg:px-8 w-full">
         <Link href="/blogs" className="inline-flex items-center gap-2 text-blue-600 font-semibold hover:text-blue-700 transition-colors mb-10 text-sm">

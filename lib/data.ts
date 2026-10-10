@@ -8,7 +8,7 @@ import {
   FALLBACK_PARTNERS,
   FALLBACK_SKILLS,
   FALLBACK_BLOGS,
-  FALLBACK_REVIEWS
+  FALLBACK_REVIEWS, FALLBACK_TALLY_SERVICES
 } from './fallbackData';
 
 export async function getActiveBanners() {
@@ -26,7 +26,7 @@ export async function getActiveBanners() {
 export async function getActivePartners() {
   try {
     const { rows } = await query(
-      'SELECT * FROM partners WHERE is_active = true ORDER BY CASE WHEN display_order = 0 THEN 999999 ELSE display_order END ASC, id ASC'
+      'SELECT * FROM partners WHERE is_active = true AND (is_tally_partner = false OR is_tally_partner IS NULL) ORDER BY CASE WHEN display_order = 0 THEN 999999 ELSE display_order END ASC, id ASC'
     );
     if (rows && rows.length > 0) {
       return rows;
@@ -160,3 +160,40 @@ export async function getActiveReviews() {
   return FALLBACK_REVIEWS;
 }
 
+export async function getActiveTallyServices() {
+  try {
+    const { rows } = await query(
+      'SELECT * FROM tally_services WHERE is_active = true ORDER BY CASE WHEN display_order = 0 THEN 999999 ELSE display_order END ASC, id ASC'
+    );
+    if (rows.length === 0) {
+      return Object.values(FALLBACK_TALLY_SERVICES);
+    }
+    return rows;
+  } catch (error) {
+    console.error('Failed to fetch tally services:', error);
+    return Object.values(FALLBACK_TALLY_SERVICES);
+  }
+}
+
+export async function getTallyServiceBySlug(slug: string) {
+  try {
+    const { rows } = await query('SELECT * FROM tally_services WHERE slug = $1 AND is_active = true', [slug]);
+    if (rows.length > 0) return rows[0];
+    return FALLBACK_TALLY_SERVICES[slug.toLowerCase()] || null;
+  } catch (error) {
+    console.error('Error fetching tally service by slug:', error);
+    return FALLBACK_TALLY_SERVICES[slug.toLowerCase()] || null;
+  }
+}
+
+export async function getActiveTallyPartners() {
+  try {
+    const { rows } = await query(
+      'SELECT * FROM partners WHERE is_active = true AND is_tally_partner = true ORDER BY display_order ASC, id DESC'
+    );
+    return rows;
+  } catch (error) {
+    console.error('Failed to fetch tally partners:', error);
+    return [];
+  }
+}

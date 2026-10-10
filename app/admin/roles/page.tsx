@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Trash2, Loader2, Pencil, ShieldAlert, Shield, Check } from "lucide-react";
+import { Plus, Trash2, Loader2, Pencil, ShieldAlert, Shield, Check, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import PermissionGate from "@/components/admin/PermissionGate";
 
@@ -18,6 +18,7 @@ const AVAILABLE_PERMISSIONS = [
   { id: 'manage_partners', name: 'Manage Partners' },
   { id: 'manage_products', name: 'Manage Products' },
   { id: 'manage_services', name: 'Manage Services' },
+    { id: 'manage_tally_services', name: 'Manage Tally Services' },
   { id: 'manage_seo', name: 'Manage Global SEO' },
   { id: 'manage_banners', name: 'Manage Banners' },
   { id: 'manage_reviews', name: 'Manage Reviews' },
@@ -34,6 +35,7 @@ export default function RolesAdmin() {
   // Form State
   const [name, setName] = useState("");
   const [permissions, setPermissions] = useState<string[]>([]);
+  const [viewingRolePerms, setViewingRolePerms] = useState<Role | null>(null);
 
   const [isSaving, setIsSaving] = useState(false);
   const router = useRouter();
@@ -219,7 +221,7 @@ export default function RolesAdmin() {
       )}
 
       {!showForm && (
-        <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden overflow-x-auto scrollbar-hide">
+        <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden overflow-x-auto custom-scrollbar">
           <table className="w-full text-left text-sm whitespace-nowrap relative">
             <thead className="bg-muted/50 border-b border-border/50 backdrop-blur-xl">
               <tr>
@@ -243,21 +245,14 @@ export default function RolesAdmin() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex flex-wrap gap-1.5 max-w-md whitespace-normal">
-                      {r.permissions && r.permissions.length > 0 ? (
-                        r.permissions.map(pId => {
-                          const def = AVAILABLE_PERMISSIONS.find(p => p.id === pId);
-                          return (
-                            <span key={pId} className="px-2 py-0.5 rounded-md bg-muted/60 text-[11px] font-medium text-muted-foreground border border-border/40">
-                              {def?.name || pId}
-                            </span>
-                          );
-                        })
-                      ) : (
-                        <span className="text-xs text-muted-foreground italic">No permissions</span>
-                      )}
-                    </div>
-                  </td>
+                      <button 
+                        onClick={() => setViewingRolePerms(r)} 
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 text-xs font-semibold transition-colors"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                        {r.permissions?.length || 0} Permissions
+                      </button>
+                    </td>
                   <td className="px-6 py-4">
                     <span className="text-sm font-medium text-muted-foreground">
                       {new Date(r.created_at).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
@@ -300,6 +295,47 @@ export default function RolesAdmin() {
         </div>
       )}
     </div>
+    
+      {/* View Permissions Modal */}
+      {viewingRolePerms && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 animate-in fade-in duration-200" onClick={() => setViewingRolePerms(null)}>
+          <div className="bg-background border border-border/50 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6 border-b border-border/50 flex items-center justify-between">
+              <h2 className="text-lg font-bold">Permissions: {viewingRolePerms.name}</h2>
+              
+            </div>
+            <div className="p-6 max-h-[60vh] overflow-y-auto">
+              {viewingRolePerms.permissions && viewingRolePerms.permissions.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {viewingRolePerms.permissions.map(pId => {
+                    const def = AVAILABLE_PERMISSIONS.find(p => p.id === pId);
+                    return (
+                      <span key={pId} className="px-3 py-1.5 rounded-lg bg-primary/10 text-primary text-xs font-semibold border border-primary/20">
+                        {def?.name || pId}
+                      </span>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <ShieldAlert className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                  <p>No permissions assigned to this role.</p>
+                </div>
+              )}
+            </div>
+            <div className="p-6 border-t border-border/50 bg-muted/20 flex justify-end">
+              <button onClick={() => setViewingRolePerms(null)} className="px-6 py-2 rounded-xl bg-muted text-muted-foreground font-semibold hover:bg-muted/80 transition-colors">
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </PermissionGate>
   );
 }
+
+
+
+
+

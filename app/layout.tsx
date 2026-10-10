@@ -30,6 +30,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 import ScrollToHash from "@/components/ScrollToHash";
+import GlobalChat from "@/components/GlobalChat";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -41,6 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-full flex flex-col font-sans overflow-x-hidden">
         <ScrollToHash />
         {children}
+        <GlobalChat />
         <Script
           id="sw-register"
           strategy="afterInteractive"
@@ -64,3 +66,4 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
+

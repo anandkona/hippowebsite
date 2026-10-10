@@ -240,7 +240,7 @@ export default function UsersAdmin() {
       )}
 
       {!showForm && (
-        <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden overflow-x-auto scrollbar-hide">
+        <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden overflow-x-auto custom-scrollbar">
           <table className="w-full text-left text-sm whitespace-nowrap relative">
             <thead className="bg-muted/50 border-b border-border/50 backdrop-blur-xl">
               <tr>
@@ -314,3 +314,4 @@ export default function UsersAdmin() {
     </PermissionGate>
   );
 }
+

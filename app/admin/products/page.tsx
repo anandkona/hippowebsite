@@ -205,7 +205,7 @@ export default function ProductsCMS() {
     <PermissionGate permission="manage_products">
     <div className="w-full max-w-7xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between -mt-4">
         <h2 className="text-2xl font-bold text-foreground">Manage Products</h2>
         <button
           onClick={() => {
@@ -220,15 +220,15 @@ export default function ProductsCMS() {
       </div>
 
       {/* Products Table */}
-      <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden overflow-x-auto scrollbar-hide">
+      <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden overflow-x-auto custom-scrollbar">
         <table className="w-full text-left text-sm whitespace-nowrap relative">
           <thead className="bg-muted border-b border-border/50 sticky top-0 z-10 shadow-sm">
             <tr>
-              <th className="px-6 py-4 font-medium text-foreground w-16">S.No</th>
-              <th className="px-6 py-4 font-medium text-foreground">Product</th>
-              <th className="px-6 py-4 font-medium text-foreground">Product ID</th>
-              <th className="px-6 py-4 font-medium text-foreground">Status</th>
-              <th className="px-6 py-4 font-medium text-foreground text-right">Actions</th>
+              <th className="px-4 py-3 text-sm font-medium text-foreground w-16">S.No</th>
+              <th className="px-4 py-3 text-sm font-medium text-foreground">Product</th>
+              <th className="px-4 py-3 text-sm font-medium text-foreground">Product ID</th>
+              <th className="px-4 py-3 text-sm font-medium text-foreground">Status</th>
+              <th className="px-4 py-3 text-sm font-medium text-foreground text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border/50">
@@ -238,8 +238,8 @@ export default function ProductsCMS() {
               <tr><td colSpan={5} className="text-center py-12 text-muted-foreground">No products found.</td></tr>
             ) : products.map((product, index) => (
               <tr key={product.id} className="hover:bg-muted/20 cursor-pointer transition-colors" onClick={() => router.push(`/admin/products/${product.product_id}`)}>
-                <td className="px-6 py-4 text-muted-foreground">{index + 1}</td>
-                <td className="px-6 py-4 font-medium text-foreground">
+                <td className="px-4 py-3 text-sm text-muted-foreground">{index + 1}</td>
+                <td className="px-4 py-3 text-sm font-medium text-foreground">
                   <div className="flex items-center gap-3">
                     <div className="bg-emerald-100 text-emerald-600 p-2 rounded-lg flex-shrink-0">
                       <Package className="h-4 w-4" />
@@ -250,12 +250,12 @@ export default function ProductsCMS() {
                     </div>
                   </div>
                 </td>
-                <td className="px-6 py-4 text-muted-foreground">
+                <td className="px-4 py-3 text-sm text-muted-foreground">
                   <span className="bg-muted px-2.5 py-0.5 rounded-full text-[11px] font-semibold tracking-wider text-slate-600 uppercase">
                     {product.product_id}
                   </span>
                 </td>
-                <td className="px-6 py-4">
+                <td className="px-4 py-3 text-sm">
                   {product.is_active ? (
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-500">
                       <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Active
@@ -266,7 +266,7 @@ export default function ProductsCMS() {
                     </span>
                   )}
                 </td>
-                <td className="px-6 py-4 text-right">
+                <td className="px-4 py-3 text-sm text-right">
                   <button onClick={(e) => { e.stopPropagation(); openEdit(product); }} className="p-2 text-blue-500 hover:bg-blue-500/10 rounded-lg mr-2 transition-colors">
                     <Edit2 className="h-4 w-4" />
                   </button>
@@ -362,7 +362,7 @@ export default function ProductsCMS() {
                 </div>
 
                 <div>
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center justify-between mb-2 -mt-4">
                     <label className="text-sm font-semibold block">Features (Homepage)</label>
                     <button type="button" onClick={() => setFormData({ ...formData, features: [...formData.features, ""] })} className="text-xs text-primary font-semibold hover:underline flex items-center gap-1">
                       <Plus className="h-3 w-3" /> Add Feature
@@ -478,3 +478,7 @@ export default function ProductsCMS() {
     </PermissionGate>
   );
 }
+
+
+
+

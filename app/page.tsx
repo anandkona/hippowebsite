@@ -7,14 +7,14 @@ import ServicesSection from "@/components/ServicesSection";
 import AboutSection from "@/components/AboutSection";
 import ProductsSection from "@/components/ProductsSection";
 import AcademySection from "@/components/AcademySection";
-import PartnersSection from "@/components/PartnersSection";
+import TallyServicesSection from "@/components/TallyServicesSection";
 import PartnerLogoCard from "@/components/PartnerLogoCard";
 import BlogSection from "@/components/BlogSection";
 import ReviewsSection from "@/components/ReviewsSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
-import FloatingChat from "@/components/chatbot/FloatingChat";
-import { getActiveBanners, getActivePartners, getSeoMetadata, getActiveProducts, getActiveServices, getActiveSkills, getActiveBlogs, getActiveReviews } from "@/lib/data";
+
+import { getActiveBanners, getActivePartners, getSeoMetadata, getActiveProducts, getActiveServices, getActiveSkills, getActiveBlogs, getActiveReviews, getActiveTallyServices } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
 
@@ -37,10 +37,11 @@ export default async function Home() {
   const skills = await getActiveSkills();
   const blogs = await getActiveBlogs();
   const reviews = await getActiveReviews();
+  const activeTallyServices = await getActiveTallyServices();
 
   return (
     <div className="flex flex-col min-h-screen font-sans scroll-pt-20 lg:scroll-pt-24">
-      <Navbar products={products} services={services} />
+      <Navbar products={products} services={services} tallyServices={activeTallyServices} />
       <HeroSection banners={banners} />
 
       {/* Partner Logos Banner */}
@@ -79,15 +80,18 @@ export default async function Home() {
       <ProductsSection products={products} />
       <ServicesSection services={services} />
       <AcademySection skills={skills} />
-      <PartnersSection partners={partners} />
+      <TallyServicesSection tallyServices={activeTallyServices} />
       <BlogSection blogs={blogs} />
       <ReviewsSection reviews={reviews} />
       <ContactSection />
 
       {/* Floating Chat Widget */}
-      <FloatingChat />
+      
 
       <Footer />
     </div>
   );
 }
+
+
+

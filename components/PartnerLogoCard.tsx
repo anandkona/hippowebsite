@@ -17,7 +17,7 @@ export default function PartnerLogoCard({ partner }: PartnerLogoCardProps) {
       href={partner.website_url || '#'}
       target="_blank"
       rel="noreferrer"
-      className="flex items-center justify-center flex-shrink-0 group rounded-xl border border-border/50 bg-background/80 px-5 py-3 shadow-sm transition-all hover:border-primary/40 hover:shadow-md min-w-[180px] h-[86px]"
+      className="flex items-center justify-center flex-shrink-0 group rounded-xl border border-border/50 bg-background/80 px-2 py-1 shadow-sm transition-all hover:border-primary/40 hover:shadow-md w-[240px] h-[86px]"
     >
       {partner.logo_url ? (
         <>
@@ -33,11 +33,12 @@ export default function PartnerLogoCard({ partner }: PartnerLogoCardProps) {
               }
             }}
           />
-          <span className="hidden text-lg font-bold text-gray-800 text-center">{partner.name}</span>
+          <span className="hidden text-lg font-bold text-gray-800 text-center whitespace-nowrap">{partner.name}</span>
         </>
       ) : (
-        <span className="text-lg font-bold text-gray-800 text-center">{partner.name}</span>
+        <span className="text-lg font-bold text-gray-800 text-center whitespace-nowrap">{partner.name}</span>
       )}
     </a>
   );
 }
+

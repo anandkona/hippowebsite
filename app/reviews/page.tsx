@@ -8,7 +8,8 @@ import { Star, Quote, Plus, ArrowLeft, Search, X, Loader2, CheckCircle2, Message
 import Link from "next/link";
 import type { ReviewItem } from "@/lib/fallbackData";
 
-export default function AllReviewsPage() {
+export default async function AllReviewsPage() {
+  const activeTallyServices = await getActiveTallyServices();
   const [reviews, setReviews] = useState<ReviewItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -108,7 +109,7 @@ export default function AllReviewsPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 font-sans selection:bg-primary/20">
-      <Navbar products={[]} services={[]} />
+      <Navbar products={[]} services={[]} tallyServices={activeTallyServices} />
 
       <main className="flex-1 pt-28 sm:pt-36 pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         {/* Top Back Link */}

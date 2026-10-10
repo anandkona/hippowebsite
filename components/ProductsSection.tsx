@@ -138,14 +138,46 @@ const ProductsSection = ({ products = [] }: { products?: any[] }) => {
                       </div>
                     ))}
                   </div>
-                  <div className="flex flex-wrap items-center gap-4 mt-4">
-                    <Link
-                      href={productLink}
-                      target={linkTarget}
-                      className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:scale-[1.02] transition-all"
-                    >
-                      {pageContent.isWebsite && pageContent.websiteLink ? `Get ${product.name}` : "Explore Product"} <ArrowRight className="h-4 w-4" />
-                    </Link>
+                                    <div className="flex flex-wrap items-center gap-4 mt-4">
+                    {pageContent.isApp ? (
+                      <>
+                        {pageContent.iosLink && (
+                          <Link
+                            href={pageContent.iosLink.startsWith("http") ? pageContent.iosLink : "https://" + pageContent.iosLink}
+                            target="_blank"
+                            className="inline-flex items-center gap-2 rounded-full bg-black px-6 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
+                          >
+                            Get on App Store
+                          </Link>
+                        )}
+                        {pageContent.androidLink && (
+                          <Link
+                            href={pageContent.androidLink.startsWith("http") ? pageContent.androidLink : "https://" + pageContent.androidLink}
+                            target="_blank"
+                            className="inline-flex items-center gap-2 rounded-full bg-[#3DDC84] px-6 py-3 text-sm font-semibold text-black shadow-lg hover:shadow-xl hover:scale-[1.02] transition-all"
+                          >
+                            Get on Google Play
+                          </Link>
+                        )}
+                        {(!pageContent.iosLink && !pageContent.androidLink) && (
+                          <Link
+                            href={productLink}
+                            target={linkTarget}
+                            className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:scale-[1.02] transition-all"
+                          >
+                            Explore App <ArrowRight className="h-4 w-4" />
+                          </Link>
+                        )}
+                      </>
+                    ) : (
+                      <Link
+                        href={productLink}
+                        target={linkTarget}
+                        className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:scale-[1.02] transition-all"
+                      >
+                        {pageContent.isWebsite && pageContent.websiteLink ? "Visit Website" : "Explore Product"} <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    )}
                     <Link
                       href="/contact"
                       className="inline-flex items-center gap-2 rounded-full bg-secondary/10 px-6 py-3 text-sm font-semibold text-secondary hover:bg-secondary/20 transition-all"
@@ -164,3 +196,8 @@ const ProductsSection = ({ products = [] }: { products?: any[] }) => {
 };
 
 export default ProductsSection;
+
+
+
+
+

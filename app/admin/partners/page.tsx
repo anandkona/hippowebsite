@@ -12,6 +12,7 @@ type Partner = {
   website_url: string;
   display_order: number;
   is_active: boolean;
+  is_tally_partner: boolean;
   seo_title?: string;
   seo_description?: string;
   seo_keywords?: string;
@@ -29,6 +30,7 @@ export default function PartnersCMS() {
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [displayOrder, setDisplayOrder] = useState(0);
   const [isActive, setIsActive] = useState(true);
+  const [isTallyPartner, setIsTallyPartner] = useState(false);
   
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
@@ -59,6 +61,7 @@ export default function PartnersCMS() {
     setWebsiteUrl("");
     setDisplayOrder(0);
     setIsActive(true);
+    setIsTallyPartner(false);
     setSeoTitle("");
     setSeoDescription("");
     setSeoKeywords("");
@@ -72,6 +75,7 @@ export default function PartnersCMS() {
     setWebsiteUrl(partner.website_url || "");
     setDisplayOrder(partner.display_order);
     setIsActive(partner.is_active);
+    setIsTallyPartner(partner.is_tally_partner || false);
     setSeoTitle(partner.seo_title || "");
     setSeoDescription(partner.seo_description || "");
     setSeoKeywords(partner.seo_keywords || "");
@@ -116,6 +120,7 @@ export default function PartnersCMS() {
       website_url: websiteUrl,
       display_order: displayOrder,
       is_active: isActive,
+      is_tally_partner: isTallyPartner,
       seo_title: seoTitle,
       seo_description: seoDescription,
       seo_keywords: seoKeywords
@@ -262,16 +267,28 @@ export default function PartnersCMS() {
                       className="w-full rounded-xl border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50" 
                     />
                   </div>
-                  <div className="flex items-center gap-2 md:col-span-2 pt-2">
-                    <input 
-                      type="checkbox" 
-                      id="isActive" 
-                      checked={isActive} 
-                      onChange={e => setIsActive(e.target.checked)} 
-                      className="rounded border-input text-primary focus:ring-primary h-4 w-4" 
-                    />
-                    <label htmlFor="isActive" className="text-sm font-medium">Show on website</label>
-                  </div>
+                  <div className="flex items-center gap-8 md:col-span-2 pt-2">
+  <div className="flex items-center gap-2">
+    <input 
+      type="checkbox" 
+      id="isActive" 
+      checked={isActive} 
+      onChange={e => setIsActive(e.target.checked)} 
+      className="rounded border-input text-primary focus:ring-primary h-4 w-4" 
+    />
+    <label htmlFor="isActive" className="text-sm font-medium">Show on website</label>
+  </div>
+  <div className="flex items-center gap-2">
+    <input 
+      type="checkbox" 
+      id="isTallyPartner" 
+      checked={isTallyPartner} 
+      onChange={e => setIsTallyPartner(e.target.checked)} 
+      className="rounded border-input text-blue-600 focus:ring-blue-600 h-4 w-4" 
+    />
+    <label htmlFor="isTallyPartner" className="text-sm font-medium text-blue-600">Is Tally Partner</label>
+  </div>
+</div>
                 </div>
               </div>
               
@@ -344,7 +361,7 @@ export default function PartnersCMS() {
           </button>
         </div>
       ) : (
-        <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden overflow-x-auto scrollbar-hide">
+        <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden overflow-x-auto custom-scrollbar">
           <table className="w-full text-left text-sm whitespace-nowrap relative">
             <thead className="bg-muted border-b border-border/50 sticky top-0 z-10 shadow-sm">
               <tr>
@@ -426,3 +443,10 @@ export default function PartnersCMS() {
     </PermissionGate>
   );
 }
+
+
+
+
+
+
+

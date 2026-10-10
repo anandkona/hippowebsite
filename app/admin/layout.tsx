@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, Image as ImageIcon, Users, Search, LogOut, Loader2, ArrowLeft, Home, BookOpen, Package, Shield, MessageSquare, Quote } from "lucide-react";
+import { LayoutDashboard, Image as ImageIcon, Users, Search, LogOut, Loader2, ArrowLeft, Home, BookOpen, Package, Shield, MessageSquare, Quote, Mail } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -77,9 +77,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: "Blogs", href: "/admin/blogs", icon: BookOpen, permission: "manage_blogs" },
     { name: "Products", href: "/admin/products", icon: Package, permission: "manage_products" },
     { name: "Services", href: "/admin/services", icon: BookOpen, permission: "manage_services" },
+    { name: "Tally Services", href: "/admin/tally-services", icon: BookOpen, permission: "manage_tally_services" },
     { name: "Users", href: "/admin/users", icon: Users, permission: "manage_team" },
     { name: "Roles", href: "/admin/roles", icon: Shield, permission: "manage_team" },
     { name: "Live Chat", href: "/admin/chat", icon: MessageSquare, permission: "none" },
+    { name: "Enquiries", href: "/admin/enquiries", icon: Mail, permission: "none" },
     { name: "Reviews", href: "/admin/reviews", icon: Quote, permission: "manage_reviews" },
   ];
 
@@ -91,12 +93,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       )}
 
       {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border/50 flex flex-col flex-shrink-0 overflow-y-auto transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}>
+      <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border/50 flex flex-col flex-shrink-0 transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="p-6 border-b border-border/50 flex justify-center items-center relative">
           <img src="/Hippo_Logo_Black.png" alt="Logo" className="h-10 w-auto object-contain" />
         </div>
 
-        <nav className="flex-1 p-4 space-y-1">
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar">
           <div className="px-3 pb-2 pt-1">
             <p className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
               Admin Panel
@@ -137,7 +139,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-hide bg-background">
+      <main className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar bg-background">
         {/* Top Navbar */}
         <div className="sticky top-0 z-10 bg-card border-b border-border/50 px-4 md:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -170,3 +172,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     </div>
   );
 }
+
+
+
+
+
+

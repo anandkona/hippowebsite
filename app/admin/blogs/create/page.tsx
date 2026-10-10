@@ -111,7 +111,7 @@ export default function CreateBlogPage() {
   return (
     <PermissionGate permission="manage_blogs">
     <div className="max-w-6xl mx-auto space-y-8 pb-20">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between -mt-4">
         <Link href="/admin/blogs" className="flex items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="mr-2 h-4 w-4" /> Back to Blogs
         </Link>
@@ -213,7 +213,7 @@ export default function CreateBlogPage() {
             </div>
 
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between -mt-4">
                 <label className="text-sm font-semibold">Cover Image</label>
                 <input
                   type="file"

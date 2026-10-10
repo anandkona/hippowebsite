@@ -1,4 +1,4 @@
-import { getActiveBlogs, getSeoMetadata } from "@/lib/data";
+import { getActiveBlogs, getSeoMetadata , getActiveTallyServices } from "@/lib/data";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
@@ -18,11 +18,12 @@ export async function generateMetadata() {
 }
 
 export default async function BlogsPage() {
+  const activeTallyServices = await getActiveTallyServices();
   const blogs = await getActiveBlogs();
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 font-sans">
-      <Navbar products={[]} services={[]} />
+      <Navbar products={[]} services={[]} tallyServices={activeTallyServices} />
 
       <main className="flex-1 pt-32 pb-24 max-w-7xl mx-auto px-6 lg:px-8 w-full">
         <div className="mb-16 text-center max-w-3xl mx-auto">

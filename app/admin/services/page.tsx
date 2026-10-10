@@ -116,7 +116,7 @@ export default function AdminServicesPage() {
   return (
     <PermissionGate permission="manage_services">
     <div className="w-full">
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center justify-between mb-2 -mt-4">
         <h2 className="text-2xl font-bold tracking-tight">Services</h2>
         <button
           onClick={() => { setEditingService(null); setFormData({ title: "", description: "", highlight: "", icon_name: "Activity", display_order: 0, is_active: true, _iconSearchFocus: false }); setIsModalOpen(true); }}
@@ -126,38 +126,38 @@ export default function AdminServicesPage() {
         </button>
       </div>
 
-      <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden overflow-x-auto scrollbar-hide">
+      <div className="bg-card rounded-2xl border border-border/50 shadow-sm overflow-hidden overflow-x-auto custom-scrollbar">
         <table className="w-full text-left text-sm whitespace-nowrap relative">
           <thead className="bg-muted border-b border-border/50 sticky top-0 z-10 shadow-sm">
             <tr>
-              <th className="px-6 py-4 font-medium text-foreground w-16">S.No</th>
-              <th className="px-6 py-4 font-medium text-foreground">Service Name</th>
-              <th className="px-6 py-4 font-medium text-foreground">Highlight</th>
-              <th className="px-6 py-4 font-medium text-foreground w-1/3">Description</th>
-              <th className="px-6 py-4 font-medium text-foreground">Order</th>
-              <th className="px-6 py-4 font-medium text-foreground">Status</th>
-              <th className="px-6 py-4 font-medium text-foreground text-right">Actions</th>
+              <th className="px-4 py-3 text-sm font-medium text-foreground w-16">S.No</th>
+              <th className="px-4 py-3 text-sm font-medium text-foreground">Service Name</th>
+              <th className="px-4 py-3 text-sm font-medium text-foreground">Highlight</th>
+              
+              <th className="px-4 py-3 text-sm font-medium text-foreground">Order</th>
+              <th className="px-4 py-3 text-sm font-medium text-foreground">Status</th>
+              <th className="px-4 py-3 text-sm font-medium text-foreground text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border/50">
             {loading ? (
-              <tr><td colSpan={7} className="text-center py-8"><Loader2 className="h-6 w-6 animate-spin mx-auto text-muted-foreground" /></td></tr>
+              <tr><td colSpan={6} className="text-center py-8"><Loader2 className="h-6 w-6 animate-spin mx-auto text-muted-foreground" /></td></tr>
             ) : services.length === 0 ? (
-              <tr><td colSpan={7} className="text-center py-8 text-muted-foreground">No services found. Click 'Add Service' to create one.</td></tr>
+              <tr><td colSpan={6} className="text-center py-8 text-muted-foreground">No services found. Click 'Add Service' to create one.</td></tr>
             ) : services.map((service, index) => {
               const Icon = (Icons as any)[service.icon_name] || Activity;
 
               return (
                 <tr key={service.id} className="hover:bg-muted/20 transition-colors">
-                  <td className="px-6 py-4 text-muted-foreground">{index + 1}</td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-3 text-sm text-muted-foreground">{index + 1}</td>
+                  <td className="px-4 py-3 text-sm">
                     {service.slug ? (
                       <Link href={`/admin/services/${service.slug}`} className="flex items-center gap-4 group cursor-pointer block">
                         <div className="h-12 w-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center overflow-hidden shrink-0 group-hover:bg-primary/20 transition-colors">
                           <Icon className="w-6 h-6" />
                         </div>
                         <div>
-                          <div className="font-semibold text-foreground text-base group-hover:text-primary transition-colors">{service.title}</div>
+                          <div className="font-semibold text-foreground text-sm group-hover:text-primary transition-colors">{service.title}</div>
                         </div>
                       </Link>
                     ) : (
@@ -166,26 +166,24 @@ export default function AdminServicesPage() {
                           <Icon className="w-6 h-6" />
                         </div>
                         <div>
-                          <div className="font-semibold text-foreground text-base">{service.title}</div>
+                          <div className="font-semibold text-foreground text-sm">{service.title}</div>
                         </div>
                       </div>
                     )}
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-4 py-3 text-sm">
                     <span className="text-xs font-bold text-primary/80 uppercase tracking-wider">{service.highlight}</span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-foreground whitespace-normal max-w-[400px]">
-                    <ExpandableDescription text={service.description} />
-                  </td>
-                  <td className="px-6 py-4 font-medium text-foreground">{service.display_order}</td>
-                  <td className="px-6 py-4">
+                  
+                  <td className="px-4 py-3 text-sm font-medium text-foreground">{service.display_order}</td>
+                  <td className="px-4 py-3 text-sm">
                     {service.is_active ? (
                       <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-emerald-500/10 text-emerald-500">Active</span>
                     ) : (
                       <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-muted text-muted-foreground">Hidden</span>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-right">
+                  <td className="px-4 py-3 text-sm text-right">
                     <button onClick={() => openEdit(service)} className="p-2 text-blue-500 hover:bg-blue-500/10 rounded-lg mr-2 transition-colors" title="Edit Basic Info">
                       <Edit2 className="h-4 w-4" />
                     </button>
@@ -296,3 +294,8 @@ export default function AdminServicesPage() {
     </PermissionGate>
   );
 }
+
+
+
+
+
