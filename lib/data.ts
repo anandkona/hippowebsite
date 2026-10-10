@@ -166,12 +166,12 @@ export async function getActiveTallyServices() {
       'SELECT * FROM tally_services WHERE is_active = true ORDER BY CASE WHEN display_order = 0 THEN 999999 ELSE display_order END ASC, id ASC'
     );
     if (rows.length === 0) {
-      return Object.values(FALLBACK_TALLY_SERVICES);
+      return [];
     }
     return rows;
   } catch (error) {
     console.error('Failed to fetch tally services:', error);
-    return Object.values(FALLBACK_TALLY_SERVICES);
+    return [];
   }
 }
 

@@ -95,17 +95,10 @@ export default function TallyServiceEditorCMS() {
               seoTitle: pc.seoTitle || "",
               seoDescription: pc.seoDescription || "",
               seoKeywords: pc.seoKeywords || "",
-              pathTag: pc.pathTag || "CLOUD JOURNEY / OUR APPROACH",
-              pathTitle: pc.pathTitle || "A practical path from legacy systems to cloud maturity.",
-              pathSubtitle: pc.pathSubtitle || "Our framework ensures a smooth transition, reducing risks and accelerating time-to-value for enterprise cloud adoption.",
-              pathItems: pc.pathItems || [
-                "Enterprise transformation approach 1",
-                "Enterprise transformation approach 2",
-                "Enterprise transformation approach 3",
-                "Enterprise transformation approach 4",
-                "Enterprise transformation approach 5",
-                "Enterprise transformation approach 6"
-              ]
+              pathTag: pc.pathTag || "",
+              pathTitle: pc.pathTitle || "",
+              pathSubtitle: pc.pathSubtitle || "",
+              pathItems: pc.pathItems || []
             },
           });
         }

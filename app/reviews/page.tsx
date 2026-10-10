@@ -9,7 +9,7 @@ import Link from "next/link";
 import type { ReviewItem } from "@/lib/fallbackData";
 
 export default async function AllReviewsPage() {
-  const activeTallyServices = await getActiveTallyServices();
+  // removed invalid server-side call in client component
   const [reviews, setReviews] = useState<ReviewItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -109,7 +109,7 @@ export default async function AllReviewsPage() {
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50 font-sans selection:bg-primary/20">
-      <Navbar products={[]} services={[]} tallyServices={activeTallyServices} />
+      <Navbar products={[]} services={[]} tallyServices={[]} />
 
       <main className="flex-1 pt-28 sm:pt-36 pb-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         {/* Top Back Link */}

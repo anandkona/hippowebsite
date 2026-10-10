@@ -40,8 +40,17 @@ const Navbar = ({ products = [], services = [], tallyServices = [] }: { products
   const [mobileDropdown, setMobileDropdown] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
 
-  const pathname = usePathname();
+  const pathname = usePathname() || '';
   const isHomePage = pathname === '/';
+  
+  // Slug pages also have dark hero sections and should start transparent
+  const isTransparentTop = isHomePage || 
+    (pathname.startsWith('/products/') && pathname.length > '/products/'.length) ||
+    (pathname.startsWith('/services/') && pathname.length > '/services/'.length) ||
+    (pathname.startsWith('/tally-services/') && pathname.length > '/tally-services/'.length) ||
+    (pathname.startsWith('/admin/tally-services/') && pathname.length > '/admin/tally-services/'.length); // Add admin if needed, but maybe not. Let's stick to public pages.
+    
+  const isTransparent = isTransparentTop && !scrolled;
 
   const navItems: any[] = [
     baseNavItems[0], // Home
@@ -124,7 +133,7 @@ const Navbar = ({ products = [], services = [], tallyServices = [] }: { products
       {/* Top Bar - Desktop Only */}
       {true && (
         <div className={`hidden lg:block transition-all duration-500 overflow-hidden ${scrolled ? 'max-h-0 opacity-0 -translate-y-full' : 'max-h-10 opacity-100'}`}>
-          <div className={isHomePage ? "bg-transparent py-1" : "bg-gray-900 py-1"}>
+          <div className={isTransparentTop ? "bg-transparent py-1" : "bg-gray-900 py-1"}>
             <div className="mx-auto max-w-7xl h-full flex items-center justify-between px-6 lg:px-8 xl:px-12">
               <div className="flex items-center gap-6">
                 <a href={`mailto:${email}`} className="flex items-center gap-2 text-[10px] font-bold tracking-wider text-white/60 hover:text-primary transition-colors">
@@ -161,14 +170,14 @@ const Navbar = ({ products = [], services = [], tallyServices = [] }: { products
 
       {/* Main Navbar */}
       <nav className={`transition-all duration-500 h-16 lg:h-[72px] w-full relative z-[120] ${
-        isHomePage && !scrolled ? 'bg-transparent'
+        isTransparent ? 'bg-transparent'
           : 'bg-white shadow-md border-b border-gray-100'
       }`}>
         <div className="mx-auto max-w-7xl h-full flex items-center justify-between px-6 lg:px-8 xl:px-12">
           {/* Logo */}
           <Link href="/#home" onClick={(e) => handleAnchorClick(e, "/#home")} className="flex items-center gap-2 group">
             <img
-              src={isHomePage && !scrolled ? "/Hippo_Logo_White.png" : "/Hippo_Logo_Black.png"}
+              src={isTransparent ? "/Hippo_Logo_White.png" : "/Hippo_Logo_Black.png"}
               alt="Hippocloud Technologies"
               className="h-10 lg:h-12 object-contain transition-all duration-300 group-hover:scale-105"
             />
@@ -187,7 +196,7 @@ const Navbar = ({ products = [], services = [], tallyServices = [] }: { products
                   href={item.href}
                   onClick={(e) => handleAnchorClick(e, item.href)}
                   className={`flex items-center gap-1 px-2 xl:px-4 py-2 text-sm font-medium transition-colors rounded-lg ${
-                    isHomePage && !scrolled
+                    isTransparent
                       ? 'text-white/80 hover:text-white hover:bg-white/10'
                       : 'text-gray-700 hover:text-black hover:bg-gray-50'
                   }`}
@@ -219,7 +228,7 @@ const Navbar = ({ products = [], services = [], tallyServices = [] }: { products
             <Link
               href="/contact"
               className={`hidden lg:block px-6 py-2.5 rounded-full text-sm font-bold transition-all ${
-                isHomePage && !scrolled
+                isTransparent
                   ? 'bg-white text-gray-900 shadow-lg shadow-black/20 hover:shadow-black/40 hover:-translate-y-0.5'
                   : 'bg-blue-500 text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 hover:-translate-y-0.5'
               }`}
@@ -231,7 +240,7 @@ const Navbar = ({ products = [], services = [], tallyServices = [] }: { products
             <button
               onClick={() => setMobileOpen(true)}
               className={`lg:hidden relative z-[110] p-2 transition-colors touch-manipulation ${
-                isHomePage && !scrolled ? 'text-white' : 'text-gray-800'
+                isTransparent ? 'text-white' : 'text-gray-800'
               }`}
             >
               <Menu className="h-6 w-6" />

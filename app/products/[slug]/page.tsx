@@ -194,6 +194,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       )}
 
       {/* 3. APPROACH / CLOUD JOURNEY SECTION */}
+      {(pc.pathTitle || (pc.pathItems && pc.pathItems.length > 0)) && (
       <section className="py-24 bg-slate-50 border-y border-slate-100">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <FadeInUp>
@@ -231,6 +232,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           </FadeInUp>
         </div>
       </section>
+      )}
 
       {/* 4. PROCESS STEPS SECTION */}
       {steps.length > 0 && (
