@@ -964,7 +964,7 @@ async function seed() {
     // 1. Roles
     console.log('Checking roles...');
     const defaultRoles = [
-      { name: 'Super Admin', permissions: ['manage_blogs', 'manage_skills', 'manage_partners', 'manage_products', 'manage_services', 'manage_seo', 'manage_banners', 'manage_reviews', 'manage_team', 'manage_chat'] },
+      { name: 'Super Admin', permissions: ['manage_careers', 'manage_blogs', 'manage_skills', 'manage_partners', 'manage_products', 'manage_services', 'manage_seo', 'manage_banners', 'manage_reviews', 'manage_team', 'manage_chat'] },
       { name: 'Admin', permissions: ['manage_blogs', 'manage_skills', 'manage_partners', 'manage_products', 'manage_services', 'manage_banners', 'manage_reviews', 'manage_chat'] },
       { name: 'Editor', permissions: ['manage_blogs', 'manage_skills', 'manage_banners', 'manage_reviews'] },
       { name: 'Viewer', permissions: [] }

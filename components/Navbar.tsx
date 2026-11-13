@@ -29,8 +29,9 @@ const socialLinks = [
 const baseNavItems = [
   { label: "Home", href: "/#home" },
   { label: "Skill Hub", href: "/#academy" },
-    { label: "Tally Services", href: "/tally-services" },
-  { label: "Blogs", href: "/#blog" },
+  { label: "Careers", href: "/careers" },
+  { label: "Tally Services", href: "/tally-services" },
+  { label: "Blogs", href: "/blogs" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -43,12 +44,17 @@ const Navbar = ({ products = [], services = [], tallyServices = [] }: { products
   const pathname = usePathname() || '';
   const isHomePage = pathname === '/';
   
-  // Slug pages also have dark hero sections and should start transparent
+  // Pages with dark hero sections that start transparent and transition to solid white on scroll
   const isTransparentTop = isHomePage || 
+    pathname === '/careers' ||
+    pathname === '/contact' ||
+    pathname === '/blogs' ||
+    pathname.startsWith('/blogs/') ||
+    pathname === '/tally-services' ||
     (pathname.startsWith('/products/') && pathname.length > '/products/'.length) ||
     (pathname.startsWith('/services/') && pathname.length > '/services/'.length) ||
     (pathname.startsWith('/tally-services/') && pathname.length > '/tally-services/'.length) ||
-    (pathname.startsWith('/admin/tally-services/') && pathname.length > '/admin/tally-services/'.length); // Add admin if needed, but maybe not. Let's stick to public pages.
+    (pathname.startsWith('/admin/tally-services/') && pathname.length > '/admin/tally-services/'.length);
     
   const isTransparent = isTransparentTop && !scrolled;
 
@@ -82,6 +88,7 @@ const Navbar = ({ products = [], services = [], tallyServices = [] }: { products
         ]
     },
     baseNavItems[1], // Skill Hub
+    baseNavItems[2], // Careers
       {
         label: "Tally Services",
         href: "/tally-services",
@@ -89,7 +96,7 @@ const Navbar = ({ products = [], services = [], tallyServices = [] }: { products
           ? tallyServices.map(ts => ({ label: ts.title || ts.name, href: `/tally-services/${ts.slug}` }))
           : undefined
       },
-      ...baseNavItems.slice(3) // Blogs, Contact
+      ...baseNavItems.slice(4) // Blogs, Contact
   ];
 
   const email = "info@hippoclouds.com";

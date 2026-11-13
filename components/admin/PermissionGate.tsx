@@ -5,6 +5,15 @@ import { useRouter } from "next/navigation";
 import { ShieldAlert } from "lucide-react";
 
 export const PAGE_PERMISSIONS: Record<string, string> = {
+  "/admin/careers": "manage_careers",
+  "/admin/careers/jobs": "manage_careers",
+  "/admin/careers/jobs/create": "manage_careers",
+  "/admin/careers/applications": "manage_careers",
+  "/admin/careers/candidates": "manage_careers",
+  "/admin/careers/interviews": "manage_careers",
+  "/admin/careers/offers": "manage_careers",
+  "/admin/careers/onboarding": "manage_careers",
+  "/admin/careers/pipeline": "manage_careers",
   "/admin/blogs": "manage_blogs",
   "/admin/blogs/create": "manage_blogs",
   "/admin/skills": "manage_skills",

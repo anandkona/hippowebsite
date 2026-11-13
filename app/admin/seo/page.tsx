@@ -61,7 +61,7 @@ export default function SEOCMS() {
   }
 
   return (
-    <PermissionGate permission="manage_seo">
+    
     <div className="w-full">
       <div className="bg-card rounded-2xl border border-border/50 overflow-hidden shadow-sm p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -95,6 +95,6 @@ export default function SEOCMS() {
         </form>
       </div>
     </div>
-    </PermissionGate>
+    
   );
 }

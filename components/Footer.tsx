@@ -49,7 +49,7 @@ const services = [
 const legal = [
   { label: "Privacy Policy", href: "https://www.hippoclouds.com/#" },
   { label: "Terms of Service", href: "https://www.hippoclouds.com/#" },
-  { label: "Careers", href: "https://www.hippoclouds.com/#" },
+  { label: "Careers", href: "/careers" },
 ];
 
 const Footer = () => {

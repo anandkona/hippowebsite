@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, Image as ImageIcon, Users, Search, LogOut, Loader2, ArrowLeft, Home, BookOpen, Package, Shield, MessageSquare, Quote, Mail } from "lucide-react";
+import { LayoutDashboard, Image as ImageIcon, Users, Search, LogOut, Loader2, ArrowLeft, Home, BookOpen, Package, Shield, MessageSquare, Quote, Mail, Briefcase } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -31,10 +31,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       setUserRole(role);
       try {
         let perms: string[] = JSON.parse(localStorage.getItem("user_permissions") || "[]");
-        // Ensure Super Admin and Admin users have manage_reviews in active session
-        if ((role === "Super Admin" || isAdmin || perms.includes("manage_team")) && !perms.includes("manage_reviews")) {
-          perms = [...perms, "manage_reviews"];
-          localStorage.setItem("user_permissions", JSON.stringify(perms));
+        // Ensure Super Admin and Admin users have manage_reviews and manage_careers in active session
+        if (role === "Super Admin" || isAdmin || perms.includes("manage_team")) {
+          let updated = false;
+          if (!perms.includes("manage_reviews")) {
+            perms.push("manage_reviews");
+            updated = true;
+          }
+          if (!perms.includes("manage_careers")) {
+            perms.push("manage_careers");
+            updated = true;
+          }
+          if (updated) {
+            localStorage.setItem("user_permissions", JSON.stringify(perms));
+          }
         }
         setUserPermissions(perms);
       } catch (e) {
@@ -78,6 +88,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: "Products", href: "/admin/products", icon: Package, permission: "manage_products" },
     { name: "Services", href: "/admin/services", icon: BookOpen, permission: "manage_services" },
     { name: "Tally Services", href: "/admin/tally-services", icon: BookOpen, permission: "manage_tally_services" },
+    { name: "Careers & ATS", href: "/admin/careers", icon: Briefcase, permission: "manage_careers" },
     { name: "Users", href: "/admin/users", icon: Users, permission: "manage_team" },
     { name: "Roles", href: "/admin/roles", icon: Shield, permission: "manage_team" },
     { name: "Live Chat", href: "/admin/chat", icon: MessageSquare, permission: "none" },
@@ -109,7 +120,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             if (userRole === "Super Admin" || userPermissions.includes("manage_team") || userPermissions.includes("manage_all")) return true;
             return Array.isArray(userPermissions) && userPermissions.includes(item.permission);
           }).map((item) => {
-            const isActive = pathname === item.href || (item.href === "/admin/home" && ["/admin/banners", "/admin/seo", "/admin/home"].includes(pathname || ""));
+            const isActive = pathname === item.href || 
+              (item.href === "/admin/home" && ["/admin/banners", "/admin/seo", "/admin/home"].includes(pathname || "")) ||
+              (item.href === "/admin/careers" && (pathname === "/admin/careers" || pathname?.startsWith("/admin/careers/")));
             return (
               <Link
                 key={item.name}

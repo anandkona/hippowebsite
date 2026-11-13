@@ -20,12 +20,14 @@ export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoMetadata('/');
-  if (!seo) return {};
+  const siteTitle = seo?.title?.trim() || 'HippoClouds';
 
   return {
-    title: seo.title,
-    description: seo.description,
-    keywords: seo.keywords,
+    title: {
+      absolute: siteTitle,
+    },
+    description: seo?.description || 'Enterprise Cloud & AI Solutions',
+    keywords: seo?.keywords || 'cloud, enterprise, software, ai',
   };
 }
 

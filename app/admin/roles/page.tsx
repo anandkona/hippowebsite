@@ -13,6 +13,7 @@ type Role = {
 };
 
 const AVAILABLE_PERMISSIONS = [
+  { id: 'manage_careers', name: 'Manage Careers & ATS' },
   { id: 'manage_blogs', name: 'Manage Blogs' },
   { id: 'manage_skills', name: 'Manage Skills' },
   { id: 'manage_partners', name: 'Manage Partners' },

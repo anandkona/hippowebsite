@@ -15,17 +15,19 @@ const playfair = Playfair_Display({
 
 import { getSeoMetadata } from "@/lib/data";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata(): Promise<Metadata> {
   const seo = await getSeoMetadata('/');
-  if (!seo) return {};
+  const baseTitle = seo?.title?.trim() || 'HippoClouds';
   
   return {
     title: {
-      template: '%s | ' + (seo.title || 'Hippocloud'),
-      default: seo.title || 'Hippocloud',
+      template: `%s | ${baseTitle}`,
+      default: baseTitle,
     },
-    description: seo.description,
-    keywords: seo.keywords,
+    description: seo?.description || 'Enterprise Cloud & AI Solutions',
+    keywords: seo?.keywords || 'cloud, enterprise, software, ai',
   };
 }
 
